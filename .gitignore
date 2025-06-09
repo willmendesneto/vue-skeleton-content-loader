@@ -1,0 +1,36 @@
+# editors
+.idea/
+.vscode/
+.sublimelinterrc
+*.sublime-workspace
+*.sublime-project
+*.orig
+*.local
+
+# folders
+node_modules
+dist
+# output folder from `npm pack` command
+package
+dist-demo
+
+coverage
+
+# Git worktrees
+.worktrees
+.DS_Store
+
+# cypress
+cypress.env.json
+cypress/reports/
+cypress/downloads/*
+cypress/videos/*
+cypress/screenshots/
+cucumber-messages.ndjson
+results/*
+
+# assets built on the server with the build:stash-assets npm script
+public/static/spritesheet.svg
+public/static/illustrations
+
+vite.config.mts.timestamp-*

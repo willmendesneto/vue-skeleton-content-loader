@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020",
+    "types": ["vitest/globals", "vite/client", "vite", "node", "./src/vite-env.d.ts"],
+
+    /* Paths */
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["vite.config.mts", "vitest.config.ts", "vite.config.demo.mts"]
+}

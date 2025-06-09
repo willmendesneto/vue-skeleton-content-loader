@@ -1,0 +1,21 @@
+*.spec.js
+*.spec.ts
+*.types.js
+*.types.ts
+*.snap
+*.json
+.*
+vite*
+*.zip
+*.tar
+*.tar
+*.tgz
+!index.js
+
+# Folders
+dist-demo
+src
+scripts
+# output folder from `npm pack` command
+package
+demo

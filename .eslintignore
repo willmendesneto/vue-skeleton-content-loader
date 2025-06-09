@@ -1,0 +1,7 @@
+# folders
+node_modules
+dist
+dist-demo
+
+# Main file to export all the package content
+index.js
