@@ -30,8 +30,8 @@
 </script>
 
 <template>
-  <h1 :style="{ textAlign: 'center', marginBottom: '20px' }">
-    <a href="https://github.com/willmendesneto/VueSkeletonContentLoader">Vue Skeleton Loader</a>
+  <h1>
+    <a href="https://github.com/willmendesneto/vue-skeleton-content-loader">Vue Skeleton Loader</a>
   </h1>
 
   <h2>Skeleton Loader Simulation</h2>
