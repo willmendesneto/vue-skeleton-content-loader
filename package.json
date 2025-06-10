@@ -1,7 +1,7 @@
 {
   "name": "vue-skeleton-content-loader",
   "description": "Make beautiful, animated loading skeletons that automatically adapt to your Vue apps",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "main": "./dist/index.js",
   "type": "module",

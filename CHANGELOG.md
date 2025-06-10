@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
+## [1.0.2][] - 2025-06-09
+
 ### Added
 
 - Moving CSS Params into CSS Vars
@@ -26,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Created `VueSkeletonContentLoader` package
 
 
-[Unreleased]: https://github.com/willmendesneto/vue-skeleton-content-loader/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/willmendesneto/vue-skeleton-content-loader/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/willmendesneto/vue-skeleton-content-loader/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/willmendesneto/vue-skeleton-content-loader/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/willmendesneto/vue-skeleton-content-loader/tree/v1.0.0
