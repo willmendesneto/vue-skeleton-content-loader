@@ -1,4 +1,4 @@
-# Vue Skeleton loader
+# Vue Skeleton Content Loader
 
 [![npm downloads](https://img.shields.io/npm/dm/vue-skeleton-content-loader.svg)](https://npmjs.org/vue-skeleton-content-loader)
 [![npm](https://img.shields.io/badge/stackblitz-online-orange.svg)](https://stackblitz.com/edit/vue-skeleton-content-loader-sample)
