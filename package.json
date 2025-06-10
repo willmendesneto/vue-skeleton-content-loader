@@ -54,7 +54,8 @@
     "deploy-demo": "GH_PAGES=true npm run build-demo && gh-pages -d dist-demo",
     "postversion": "git push && git push --tags",
     "prepublish": "npm run build",
-    "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && npm run build && git add ."
+    "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && npm run build && git add .",
+    "bundlesize": "bundlesize --config .bundlesize.config.json"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
@@ -66,6 +67,7 @@
     "@vitest/eslint-plugin": "^1.2.1",
     "@vue/test-utils": "^2.4.6",
     "ajv": "^8.17.1",
+    "bundlesize": "^0.18.2",
     "changelog-verify": "^1.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

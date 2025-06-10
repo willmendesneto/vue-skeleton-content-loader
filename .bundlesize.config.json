@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "path": "dist/vue-skeleton-content-loader.es.js",
+      "maxSize": "820B"
+    },
+    {
+      "path": "dist/vue-skeleton-content-loader.umd.js",
+      "maxSize": "819B"
+    }
+  ]
+}

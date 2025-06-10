@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
+### Added
+
+- Adding bundlesize validation
+
+### Updated
+
+- Fixing docs to refer to correct StackBlitz link
+
 ## [1.0.0][] - 2025-06-09
 
 ### Added
