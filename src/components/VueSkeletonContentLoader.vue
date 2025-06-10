@@ -51,6 +51,26 @@
 
 <style scoped>
   .skeleton-loader {
+
+    --base-color: rgb(239, 241, 246);
+    --light-mode-color: rgba(255, 255, 255, 0.6);
+    --light-mode-color-to: rgba(255, 255, 255, 0);
+    --dark-mode-color: rgba(0, 0, 0, 0.2);
+    --dark-mode-color-to: transparent;
+    --animation-duration: 2s;
+    --background-image-light-mode: linear-gradient(
+      90deg,
+      var(--light-mode-color-to),
+      var(--light-mode-color),
+      var(--light-mode-color-to)
+    );
+    --background-image-dark-mode: linear-gradient(
+      90deg,
+      var(--dark-mode-color-to),
+      var(--dark-mode-color),
+      var(--dark-mode-color-to)
+    );
+
     box-sizing: border-box;
     /**
       * `overflow` and `position` are required steps to make sure
@@ -59,7 +79,7 @@
       */
     overflow: hidden;
     position: relative;
-    background: rgb(239, 241, 246) no-repeat;
+    background: var(--base-color) no-repeat;
     border-radius: 4px;
     width: 100%;
     height: 20px;
@@ -103,7 +123,7 @@
   }
   .skeleton-loader.progress:before,
   .skeleton-loader.progress-dark:before {
-    animation: progress 2s ease-in-out infinite;
+    animation: progress var(--animation-duration) ease-in-out infinite;
     background-size: 200px 100%;
     position: absolute;
     z-index: 1;
@@ -114,23 +134,18 @@
     content: '';
   }
   .skeleton-loader.progress:before {
-    background-image: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0.6),
-      rgba(255, 255, 255, 0)
-    );
+    background-image: var(--background-image-light-mode);
   }
   .skeleton-loader.progress-dark:before {
-    background-image: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.2), transparent);
+    background-image: var(--background-image-dark-mode);
   }
   .skeleton-loader.pulse {
-    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation: pulse var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1) infinite;
     animation-delay: 0.5s;
   }
   .skeleton-loader.pulse-dark {
-    background: rgba(50, 50, 50, 0.2);
-    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    background: var(--dark-mode-color);
+    animation: pulse var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1) infinite;
     animation-delay: 0.5s;
   }
   .skeleton-loader.custom-content {

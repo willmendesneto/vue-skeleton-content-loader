@@ -6,7 +6,7 @@
   const contentLoaded = ref(false);
   const animation = ref<VueSkeletonContentLoaderConfig['animation']>('pulse');
   const count = ref<VueSkeletonContentLoaderConfig['count']>(2);
-  const widthHeightSizeInPixels = ref<number>(50);
+  const widthHeightSizeInPixels = ref<`${number}px`>('50px');
 
   onMounted(() => {
     // This is just to simulate a loading time for the skeleton loader
@@ -18,7 +18,7 @@
     intervalId.value = window.setInterval(() => {
       animation.value = animation.value === 'pulse' ? 'progress-dark' : 'pulse';
       count.value = count.value === 2 ? 5 : 2;
-      widthHeightSizeInPixels.value = widthHeightSizeInPixels.value === 50 ? 100 : 50;
+      widthHeightSizeInPixels.value = `${widthHeightSizeInPixels.value === '50px' ? '100px' : '50px'}`;
     }, 5000);
   });
 
@@ -164,18 +164,18 @@
     />
   </div>
 
-  <h2>Circle skeletons with mixing theming and `[style]` via `:theme` input</h2>
+  <h2>Circle skeletons with mixing theming and `[style]` via `:theme` prop</h2>
   <p>Width and height will be switching between 50px and 100px every 5 seconds</p>
   <p>
-    Current value: <b>{{ widthHeightSizeInPixels }}px</b>
+    Current value: <b>{{ widthHeightSizeInPixels }}</b>
   </p>
   <div class="item">
     <VueSkeletonContentLoader
       count="5"
       appearance="circle"
       :theme="{
-        'width.px': widthHeightSizeInPixels,
-        'height.px': widthHeightSizeInPixels,
+        'width': widthHeightSizeInPixels,
+        'height': widthHeightSizeInPixels,
         'border-radius': '10px',
       }"
     />

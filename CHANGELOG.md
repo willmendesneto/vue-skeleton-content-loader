@@ -6,13 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
+### Added
+
+- Moving CSS Params into CSS Vars
+
 ## [1.0.1][] - 2025-06-09
 
 ### Added
 
 - Adding bundlesize validation
 
-### Updated
+### Changed
 
 - Fixing docs to refer to correct StackBlitz link
 
