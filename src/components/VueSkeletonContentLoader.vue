@@ -17,7 +17,10 @@
   const items = computed(() => Array.from({ length: Number(props.count) }, (_, i) => i + 1));
 
   const size = computed<`${number}px` | null>(() => {
-    if (props.appearance !== 'square' || (typeof props.size !== 'number' && typeof props.size !== 'string')) {
+    if (
+      props.appearance !== 'square' ||
+      (typeof props.size !== 'number' && typeof props.size !== 'string')
+    ) {
       return null;
     }
 
@@ -30,8 +33,8 @@
 
   // Styles can be passed as a prop to customize the skeleton loader
   const styles = computed(() => ({
-    ...size.value ? { width: size.value, height: size.value } : {},
-    ...props.theme ? props.theme : {},
+    ...(size.value ? { width: size.value, height: size.value } : {}),
+    ...(props.theme ? props.theme : {}),
   }));
 </script>
 
@@ -68,7 +71,6 @@
 
 <style scoped>
   .skeleton-loader {
-
     --base-color: rgb(239, 241, 246);
     --light-mode-color: rgba(255, 255, 255, 0.6);
     --light-mode-color-to: rgba(255, 255, 255, 0);
@@ -114,13 +116,13 @@
     * at component level. So that we can load the
     * animations only if needed
     */
-  .skeleton-loader.circle{
+  .skeleton-loader.circle {
     width: 40px;
     height: 40px;
     margin: 5px;
     border-radius: 50%;
   }
-  .skeleton-loader.square{
+  .skeleton-loader.square {
     width: 40px;
     height: 40px;
     margin: 5px;

@@ -190,8 +190,8 @@
       count="5"
       appearance="circle"
       :theme="{
-        'width': widthHeightSizeInPixels,
-        'height': widthHeightSizeInPixels,
+        width: widthHeightSizeInPixels,
+        height: widthHeightSizeInPixels,
         'border-radius': '10px',
       }"
     />
@@ -355,16 +355,24 @@
   </div>
 
   <div class="item">
-
-      <VueSkeletonContentLoader appearance="custom-content">
-        <p class="custom-content-title">Custom content goes here</p>
-        <div class="custom-content-description">
-          <p>Here's an example of a custom content loader. You can use any HTML or SVG content inside the loader.</p>
-          <p>Also, you can customize the loader's appearance using the `theme` prop or even apply animation on the HTML content itself!</p>
-          <hr />
-          <cite>You can disable animations in this case by passing props `animation="false"` in your component</cite>
-        </div>
-      </VueSkeletonContentLoader>
+    <VueSkeletonContentLoader appearance="custom-content">
+      <p class="custom-content-title">Custom content goes here</p>
+      <div class="custom-content-description">
+        <p>
+          Here's an example of a custom content loader. You can use any HTML or SVG content inside
+          the loader.
+        </p>
+        <p>
+          Also, you can customize the loader's appearance using the `theme` prop or even apply
+          animation on the HTML content itself!
+        </p>
+        <hr />
+        <cite
+          >You can disable animations in this case by passing props `animation="false"` in your
+          component</cite
+        >
+      </div>
+    </VueSkeletonContentLoader>
   </div>
   <br />
   <br />
