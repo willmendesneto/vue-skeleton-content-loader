@@ -1,6 +1,5 @@
 # editors
 .idea/
-.vscode/
 .sublimelinterrc
 *.sublime-workspace
 *.sublime-project

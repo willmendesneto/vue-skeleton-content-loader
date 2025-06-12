@@ -16,6 +16,7 @@ vite*
 dist-demo
 src
 scripts
+.vscode
 # output folder from `npm pack` command
 package
 demo

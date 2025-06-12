@@ -3,7 +3,8 @@ type VueSkeletonContentLoaderConfigTheme = {
 } | null;
 
 export interface VueSkeletonContentLoaderConfig {
-  appearance: 'circle' | 'line' | 'custom-content' | '';
+  appearance: 'circle' | 'line' | 'square' | 'custom-content' | '';
+  size: number | `${number}` | `${number}px` | null;
   animation: 'progress' | 'progress-dark' | 'pulse' | 'false' | false | 'pulse-dark';
   theme: VueSkeletonContentLoaderConfigTheme;
   loadingText: string;

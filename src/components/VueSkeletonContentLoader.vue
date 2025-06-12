@@ -9,21 +9,36 @@
     ariaLabel: 'loading',
     appearance: 'line',
     count: 1,
+    size: null,
     animation: 'progress',
     theme: null,
   });
 
   const items = computed(() => Array.from({ length: Number(props.count) }, (_, i) => i + 1));
 
+  const size = computed<`${number}px` | null>(() => {
+    if (props.appearance !== 'square' || (typeof props.size !== 'number' && typeof props.size !== 'string')) {
+      return null;
+    }
+
+    const sizeValueInNumbersOnly = Number(props.size.toString().trim().replace(/\D/g, ''));
+    if (!Number.isInteger(sizeValueInNumbersOnly)) {
+      return null;
+    }
+    return `${sizeValueInNumbersOnly}px`;
+  });
+
   // Styles can be passed as a prop to customize the skeleton loader
-  const styles = computed(() => props.theme);
+  const styles = computed(() => ({
+    ...size.value ? { width: size.value, height: size.value } : {},
+    ...props.theme ? props.theme : {},
+  }));
 </script>
 
 <template>
   <div
     v-for="item in items"
     :key="item"
-    class="skeleton-loader"
     :aria-label="props.ariaLabel"
     aria-busy="true"
     aria-valuemin="0"
@@ -32,9 +47,11 @@
     role="progressbar"
     tabindex="-1"
     :class="[
+      'skeleton-loader',
       {
         'custom-content': props.appearance === 'custom-content',
         circle: props.appearance === 'circle',
+        square: props.appearance === 'square',
         progress: props.animation === 'progress',
         'progress-dark': props.animation === 'progress-dark',
         pulse: props.animation === 'pulse',
@@ -86,31 +103,34 @@
     display: inline-block;
     margin-bottom: 10px;
     will-change: transform;
-    /**
-  * Added only when `appearance` attribute is `circle`
-  * at component level. So that we can use it only if needed
-  */
-    /**
-  * Added only when `animation` attribute is `progress`
-  * at component level. So that we can load the
-  * animations only if needed
-  */
-    /**
-  * Added only when `animation` attribute is `pulse`
-  * at component level. So that we can load the
-  * animations only if needed
-  */
   }
   .skeleton-loader:after,
   .skeleton-loader:before {
     box-sizing: border-box;
   }
-  .skeleton-loader.circle {
+
+  /**
+    * Added only when `animation` attribute is `pulse`
+    * at component level. So that we can load the
+    * animations only if needed
+    */
+  .skeleton-loader.circle{
     width: 40px;
     height: 40px;
     margin: 5px;
     border-radius: 50%;
   }
+  .skeleton-loader.square{
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+  }
+
+  /**
+    * Added only when `animation` attribute is `progress`
+    * at component level. So that we can load the
+    * animations only if needed
+    */
   .skeleton-loader.progress,
   .skeleton-loader.progress-dark {
     transform: translate3d(0, 0, 0);
@@ -139,6 +159,12 @@
   .skeleton-loader.progress-dark:before {
     background-image: var(--background-image-dark-mode);
   }
+
+  /**
+    * Added only when `animation` attribute is `pulse`
+    * at component level. So that we can load the
+    * animations only if needed
+    */
   .skeleton-loader.pulse {
     animation: pulse var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1) infinite;
     animation-delay: 0.5s;
@@ -152,21 +178,29 @@
     height: 100%;
     background: none;
   }
+
+  /* Removing animations if Reduce motion is enabled via user's operating system */
   @media (prefers-reduced-motion: reduce) {
     .skeleton-loader.pulse,
     .skeleton-loader.pulse-dark,
     .skeleton-loader.progress-dark,
     .skeleton-loader.custom-content,
+    .skeleton-loader.custom-content::before,
+    .skeleton-loader.custom-content::after,
     .skeleton-loader.progress::before {
       animation: none;
     }
     .skeleton-loader.progress::before,
+    .skeleton-loader.custom-content::before,
+    .skeleton-loader.custom-content::after,
     .skeleton-loader.progress-dark,
     .skeleton-loader.pulse-dark,
     .skeleton-loader.custom-content {
       background-image: none;
     }
   }
+
+  /* Adding cursor styles ONLY for desktop users */
   @media screen and (min-device-width: 1200px) {
     .skeleton-loader {
       user-select: none;
@@ -174,6 +208,7 @@
     }
   }
 
+  /* Skeleton animations  */
   @keyframes progress {
     0% {
       transform: translate3d(-200px, 0, 0);

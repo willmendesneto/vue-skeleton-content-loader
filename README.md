@@ -59,7 +59,16 @@ import { VueSkeletonContentLoader } from 'vue-skeleton-content-loader';
 
 <template>
   <div class="item">
+    <p>Circle Skeleton</p>
     <VueSkeletonContentLoader count="5" appearance="circle" />
+  </div>
+  <div class="item">
+    <p>Line Skeleton</p>
+    <VueSkeletonContentLoader count="5" appearance="line" />
+  </div>
+  <div class="item">
+    <p>Square Skeleton</p>
+    <VueSkeletonContentLoader count="5" appearance="square" />
   </div>
 </template>
 ```
@@ -91,6 +100,7 @@ After global registration, you can use `<VueSkeletonContentLoader>` directly in 
 - `animation` - _default_ `progress`: Defines the CSS animation. See [Animations](#animations) for options.
 - `appearance` - _default_ `line`: Defines the shape of the skeleton. See [Appearance](#appearance) for options.
 - `theme` - _default_ `null`: An object containing CSS styles to apply to the skeleton. See [Theming](#theming) for details.
+- `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number or number with `px` suffix. E.G: `40` or `40px`
 - `loadingText` - _default_ `Loading...`: attribute that defines the text value for `aria-valuetext` attribute. Defaults to "Loading..."
 - `aria-label` - _default_ `loading`: you can add `ariaLabel` as input of the component to set a different value.
 
@@ -103,7 +113,8 @@ You can also define which appearance you want to use in your skeleton loader by 
 - `''` - _default_: it will use it `''` as appearance. At the end, it will render like a line;
 - `line`: it will render like a line. This is the same behavior as passing an empty string;
 - `circle`: it will use `circle` as appearance. Great for avatar skeletons, for example :);
-- `custom-content`: it will NOT add any appearance. Great for custom content, such as SVG, internal components and such;
+- `square`: it will use `square` as appearance and render it appropriately. Great for cards and images, for example;
+- `custom-content`: it will NOT add any appearance. Great for custom content, such as SVG, internal components and such. Although not rendering appearance, animation will be added unless component has `animation="false"` prop;
 
 ## Animations
 
@@ -115,6 +126,7 @@ You can also define which CSS animation you want to use - even not use any, if i
 - `progress` - _default_: it will use it `progress` as animation;
 - `progress-dark`: it will use it `progress-dark` as animation. Recommended if your color schema is darken;
 - `pulse`: it will use `pulse` as animation;
+- `pulse-dark`: it will use it `pulse-dark` as animation. Recommended if your color schema is darken;
 
 > `progress` is the default animation, used as the single one previously. If you don't pass the animation attribute, it defaults to `progress`.
 
@@ -176,7 +188,7 @@ The `:theme` prop now accepts the same configuration as Vue's `v-bind:style` dir
     <VueSkeletonContentLoader
       count="5"
       :theme="{
-        'height.px': 50,
+        'height': `50px`,
         'background-color': '#992929'
       }"
     />
@@ -190,7 +202,7 @@ The `:theme` prop now accepts the same configuration as Vue's `v-bind:style` dir
 
 ### Run demo locally
 
-1. This project uses [Vite](https://vitejs.dev/) as base. That means you just need to run `npm run dev` and access the link `http://localhost:5173` (or whatever port Vite assigns) in your browser.
+1. This project uses [Vite](https://vitejs.dev/) as base. That means you just need to run `npm run dev` and access the link `http://localhost:3000` (or whatever port Vite assigns) in your browser.
 
 ### Run tests
 

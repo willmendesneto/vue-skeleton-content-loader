@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
+### Changed
+
+- Updating docs to reflect new appearance for `square` option
+- Updating docs to reflect new `size` props to be used when chosen appearance is `square`
+- Updating examples with latest changes
+
+### Added
+- Adding new appearance for `square`. This one will also accept and require `size` as prop. So that, it can render a square.
+
 ## [1.0.2][] - 2025-06-09
 
 ### Added

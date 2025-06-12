@@ -97,6 +97,22 @@
 
   <hr />
 
+  <h2>Square skeletons</h2>
+
+  <div class="item">
+    <p>Pulse</p>
+    <VueSkeletonContentLoader appearance="square" count="5" size="100px" animation="pulse" />
+  </div>
+  <div class="item">
+    <p>Progress</p>
+    <VueSkeletonContentLoader appearance="square" count="5" size="100px" animation="progress" />
+  </div>
+
+  <br />
+  <br />
+
+  <hr />
+
   <h2>Line skeletons</h2>
 
   <div class="item">
