@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
+### Changed
+
+- Improving internal types
+
 ### Fixed
 
 - Fixing `npm run lint` command. The command was complaining with ESLint config file format, so it was moved to CJS.

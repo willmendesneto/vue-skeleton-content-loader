@@ -1,3 +1,6 @@
+
+// NOTE: Avoiding `CSSProperties` import to prevent bundle size increase and using a custom type instead.
+// By doing that, 6B (final result gziped) are saved in the final bundle size.
 type VueSkeletonContentLoaderConfigTheme = {
   [k: string]: string | number;
 } | null;

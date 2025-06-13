@@ -31,7 +31,9 @@
 
 <template>
   <h1>
-    <a href="https://github.com/willmendesneto/vue-skeleton-content-loader">Vue Skeleton Loader</a>
+    <a href="https://github.com/willmendesneto/vue-skeleton-content-loader"
+      >Vue Skeleton Content Loader</a
+    >
   </h1>
 
   <h2>Skeleton Loader Simulation</h2>

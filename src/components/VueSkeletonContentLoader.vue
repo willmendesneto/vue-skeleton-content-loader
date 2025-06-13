@@ -32,9 +32,9 @@
   });
 
   // Styles can be passed as a prop to customize the skeleton loader
-  const styles = computed(() => ({
-    ...(size.value ? { width: size.value, height: size.value } : {}),
-    ...(props.theme ? props.theme : {}),
+  const styles = computed<VueSkeletonContentLoaderConfig['theme']>(() => ({
+    ...(size.value && { width: size.value, height: size.value }),
+    ...props.theme,
   }));
 </script>
 
