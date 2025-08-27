@@ -138,6 +138,25 @@ describe('VueSkeletonContentLoader', () => {
     });
   });
 
+  describe('When skeleton is created with square appearance', () => {
+    it('should render skeleton with width and height based on `size` attribute', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { appearance: 'square', size: 50 },
+      });
+      const skeleton = wrapper.find('.skeleton-loader');
+      expect(skeleton.attributes('style')).toContain('width: 50px;');
+      expect(skeleton.attributes('style')).toContain('height: 50px;');
+    });
+    it('should render skeleton with width and height based on `size` using `measureUnit` attribute if available', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { appearance: 'square', size: `80em`, measureUnit: 'rem' },
+      });
+      const skeleton = wrapper.find('.skeleton-loader');
+      expect(skeleton.attributes('style')).toContain('width: 80rem;');
+      expect(skeleton.attributes('style')).toContain('height: 80rem;');
+    });
+  });
+
   describe('When skeleton is created with theming', () => {
     it('should render skeleton with styles based on theme attribute', () => {
       const theme = { width: '70px', height: '70px', 'border-radius': '10px' };

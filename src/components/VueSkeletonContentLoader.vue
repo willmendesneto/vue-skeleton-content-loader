@@ -2,9 +2,7 @@
   import { computed } from 'vue';
   import { VueSkeletonContentLoaderConfig } from '@/components/VueSkeletonContentLoader.types';
 
-  interface Props extends Partial<VueSkeletonContentLoaderConfig> {}
-
-  const props = withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Partial<VueSkeletonContentLoaderConfig>>(), {
     loadingText: 'Loading...',
     ariaLabel: 'loading',
     appearance: 'line',
@@ -12,11 +10,12 @@
     size: null,
     animation: 'progress',
     theme: null,
+    measureUnit: 'px',
   });
 
   const items = computed(() => Array.from({ length: Number(props.count) }, (_, i) => i + 1));
 
-  const size = computed<`${number}px` | null>(() => {
+  const size = computed<`${number}${VueSkeletonContentLoaderConfig['measureUnit']}` | null>(() => {
     if (
       props.appearance !== 'square' ||
       (typeof props.size !== 'number' && typeof props.size !== 'string')
@@ -28,7 +27,7 @@
     if (!Number.isInteger(sizeValueInNumbersOnly)) {
       return null;
     }
-    return `${sizeValueInNumbersOnly}px`;
+    return `${sizeValueInNumbersOnly}${props.measureUnit}`;
   });
 
   // Styles can be passed as a prop to customize the skeleton loader

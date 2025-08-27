@@ -2,11 +2,11 @@
   "files": [
     {
       "path": "dist/vue-skeleton-content-loader.es.js",
-      "maxSize": "988B"
+      "maxSize": "998B"
     },
     {
       "path": "dist/vue-skeleton-content-loader.umd.js",
-      "maxSize": "954B"
+      "maxSize": "966B"
     }
   ]
 }

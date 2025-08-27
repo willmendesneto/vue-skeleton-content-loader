@@ -69,6 +69,7 @@ import { VueSkeletonContentLoader } from 'vue-skeleton-content-loader';
   <div class="item">
     <p>Square Skeleton</p>
     <VueSkeletonContentLoader count="5" appearance="square" />
+    <VueSkeletonContentLoader count="5" appearance="square" measure-unit="rem" size="10" />
   </div>
 </template>
 ```
@@ -100,7 +101,7 @@ After global registration, you can use `<VueSkeletonContentLoader>` directly in 
 - `animation` - _default_ `progress`: Defines the CSS animation. See [Animations](#animations) for options.
 - `appearance` - _default_ `line`: Defines the shape of the skeleton. See [Appearance](#appearance) for options.
 - `theme` - _default_ `null`: An object containing CSS styles to apply to the skeleton. See [Theming](#theming) for details.
-- `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number or number with `px` suffix. E.G: `40` or `40px`
+- `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number or number as string (E.G: `"40"` or `40`). It also supports `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
 - `loadingText` - _default_ `Loading...`: attribute that defines the text value for `aria-valuetext` attribute. Defaults to "Loading..."
 - `aria-label` - _default_ `loading`: you can add `ariaLabel` as input of the component to set a different value.
 
@@ -113,8 +114,14 @@ You can also define which appearance you want to use in your skeleton loader by 
 - `''` - _default_: it will use it `''` as appearance. At the end, it will render like a line;
 - `line`: it will render like a line. This is the same behavior as passing an empty string;
 - `circle`: it will use `circle` as appearance. Great for avatar skeletons, for example :);
-- `square`: it will use `square` as appearance and render it appropriately. Great for cards and images, for example;
+- `square`: it will use `square` as appearance and render it appropriately. Great for cards and images, for example; It also requires `size` to be passed through the component - `size` has default size of `40px` and it has `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
 - `custom-content`: it will NOT add any appearance. Great for custom content, such as SVG, internal components and such. Although not rendering appearance, animation will be added unless component has `animation="false"` prop;
+
+### Appearance props (specific for `square`)
+
+When setting `square` as appearance, your component can also use these other input attributes to configure it properly
+- `size` - default _40_: number to be passed as definition for `width` and `height`. If not passed, it defaults to `40`
+- `measure-unit` - default _px_: CSS measure unit to be used for `width` and `height`. If not passed, it defaults to `px`. Valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
 
 ## Animations
 

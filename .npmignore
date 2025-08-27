@@ -20,3 +20,23 @@ scripts
 # output folder from `npm pack` command
 package
 demo
+
+
+# Folders
+.github/
+.prettierignore
+.circleci/
+coverage/
+
+# Project configuration files
+.bundlesize.config.json
+.prettierrc
+.prettierignore
+.eslintcache
+.jshintrc
+.jshintignore
+.stylelintrc
+.stylelintignore
+.coveralls.yml
+.editorconfig
+e2e
