@@ -132,9 +132,9 @@ Attributes that are not props, such as `class`, `style`, `id` or `data-*`, are a
 
 <!-- Renders: -->
 <div role="progressbar" aria-busy="true" aria-valuemin="0" aria-valuemax="100" aria-label="loading" aria-valuetext="Loading..." class="my-skeleton" data-testid="skeleton">
-  <div class="skeleton-loader progress" aria-hidden="true"></div>
-  <div class="skeleton-loader progress" aria-hidden="true"></div>
-  <div class="skeleton-loader progress" aria-hidden="true"></div>
+  <div class="skeleton-loader progress" aria-hidden="true" style="--vue-skeleton-content-loader-index: 0"></div>
+  <div class="skeleton-loader progress" aria-hidden="true" style="--vue-skeleton-content-loader-index: 1"></div>
+  <div class="skeleton-loader progress" aria-hidden="true" style="--vue-skeleton-content-loader-index: 2"></div>
 </div>
 ```
 
@@ -353,6 +353,39 @@ Dark mode is opt-in: skeletons use light colors by default. It can be enabled vi
 ```
 
 > Default dark colors use CSS [`light-dark()`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark) function. Browsers without its support keep the light colors.
+
+## Migrating from v1 to v2
+
+v2 has a few breaking changes. Please check the list below before upgrading:
+
+- **Vue v3.5.2 or higher** is required, declared as `peerDependencies`.
+- **Single root element**: skeleton items are now wrapped by a `<div>` (block element). Skeletons placed side by side without a flex or grid container are now rendered in separate lines. Attributes that are not props (E.G: `class`, `style`, `id` or `data-*`) are now added in this root element, instead of being ignored.
+- **WAI-ARIA attributes** (`role="progressbar"`, `aria-busy`, `aria-valuemin`, `aria-valuemax`, `aria-label` and `aria-valuetext`) are now in the root element, instead of in every `.skeleton-loader` item. Items have `aria-hidden="true"` and no longer have `tabindex="-1"`. Update code or tests querying these attributes in `.skeleton-loader` items:
+
+```js
+// v1
+wrapper.find('.skeleton-loader').attributes('aria-valuetext');
+// v2
+wrapper.attributes('aria-valuetext');
+```
+
+- **CSS custom properties** are prefixed with `--vue-skeleton-content-loader-`, and they can be set in any ancestor element now:
+
+| v1 | v2 |
+| --- | --- |
+| `--base-color` | `--vue-skeleton-content-loader-base-color` |
+| `--light-mode-color` | `--vue-skeleton-content-loader-light-mode-color` |
+| `--light-mode-color-to` | `--vue-skeleton-content-loader-light-mode-color-to` |
+| `--dark-mode-color` | `--vue-skeleton-content-loader-dark-mode-color` |
+| `--dark-mode-color-to` | `--vue-skeleton-content-loader-dark-mode-color-to` |
+| `--animation-duration` | `--vue-skeleton-content-loader-animation-duration` |
+| `--background-image-light-mode` | `--vue-skeleton-content-loader-background-image-light-mode` |
+| `--background-image-dark-mode` | `--vue-skeleton-content-loader-background-image-dark-mode` |
+
+- **UMD output** is renamed from `dist/vue-skeleton-content-loader.umd.js` to `dist/vue-skeleton-content-loader.umd.cjs`. Prefer loading it via CDN using the package name (E.G: `https://unpkg.com/vue-skeleton-content-loader`), as described in [Using via CDN](#using-via-cdn).
+- **`size` prop**: a CSS unit passed in `size` (E.G: `size="10em"`) now takes precedence over `measure-unit`, and decimal values are kept (E.G: `size="1.5"` renders `1.5px` instead of `15px`). Invalid values don't add `width`/`height` styles.
+- **`count` prop**: invalid values (E.G: `0` or `"abc"`) render a single skeleton, instead of none. `custom-content` appearance always renders a single skeleton.
+- **`animation` prop**: values that are not built-in animations are rendered as `animation-<value>` CSS class (custom animations), instead of being ignored. See [Custom animations](#custom-animations).
 
 ## Development
 

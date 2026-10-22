@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Other Changes
 
 - Upgrading project to Node.js v24, Vite v8, Vitest v5, ESLint v10 (flat config), TypeScript v6 and latest versions of other dev dependencies
-- Decreasing bundle size from 998B to 874B (ES) and from 966B to 938B (UMD) - gzip - by minifying the ES output and removing `Symbol.toStringTag` from the generated code
+- Minifying the ES output and removing `Symbol.toStringTag` from the generated code, decreasing bundle size from 998B to 874B (ES) and from 966B to 938B (UMD) - gzip - before the new features. With all changes and new features, bundle size is 998B (ES, same as v1.2.0), 1062B (UMD, from 966B) and 954B (CSS, from 791B) - gzip
 - Replacing `bundlesize` with `bundlesize2`, since `bundlesize` native dependencies don't work in Node.js v24
 - Removing unused dev dependencies and configurations
 - Adding CI via GitHub Actions: lint (including formatting), type check, unit tests, build, bundle size, SSR rendering of the built package (`npm run test:ssr`) and demo build, plus Dependabot updates for GitHub Actions
@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Adding `./style.css` and `./package.json` to package `exports`, and `sideEffects` field, so bundlers can tree-shake the package safely
 - Adding docs about CDN usage (UMD build) and minimum Vue version on `README.md` file
+- Adding migration guide from v1 to v2 on `README.md` file
 - Adding docs about rendered HTML, accessibility and theming via CSS custom properties on `README.md` file
 - Adding `wave` animation, similar to `progress` but with an oblique shimmer
 - Adding stagger effect via `--vue-skeleton-content-loader-animation-stagger` CSS custom property (`0s` by default), delaying each item animation based on its index. Items also expose their index via `--vue-skeleton-content-loader-index`, which can be used in custom animations
