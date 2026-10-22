@@ -11,6 +11,9 @@ export default defineConfig({
     },
   },
   build: {
+    // Keeps modern CSS as is (e.g. `:dir()` and `light-dark()`): consumers' bundlers handle
+    // their own browser targets, and transpiling it changes its behavior (e.g. `:dir()` into `:lang()`)
+    cssTarget: 'esnext',
     lib: {
       entry: {
         'vue-skeleton-content-loader': resolve(import.meta.dirname, 'src/index.ts'),

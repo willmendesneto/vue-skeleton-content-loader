@@ -210,14 +210,14 @@ describe('VueSkeletonContentLoader', () => {
         // @ts-expect-error testing invalid values
         props: { appearance: 'square', size: 'abc' },
       });
-      expect(wrapper.find('.skeleton-loader').attributes('style')).toBeFalsy();
+      expect(wrapper.find('.skeleton-loader').attributes('style')).not.toMatch(/width|height/);
     });
 
     it('should NOT add width and height styles if appearance is not `square`', () => {
       const wrapper = mount(VueSkeletonContentLoader, {
         props: { appearance: 'circle', size: 50 },
       });
-      expect(wrapper.find('.skeleton-loader').attributes('style')).toBeFalsy();
+      expect(wrapper.find('.skeleton-loader').attributes('style')).not.toMatch(/width|height/);
     });
   });
 
@@ -278,6 +278,72 @@ describe('VueSkeletonContentLoader', () => {
       expect(wrapper.find('.skeleton-loader').attributes('style')).toContain(
         '--vue-skeleton-content-loader-base-color: red;',
       );
+    });
+  });
+  describe('When skeleton is created using `wave` as animation', () => {
+    it('should add wave animation class on the skeleton components', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { animation: 'wave' },
+      });
+      expect(wrapper.find('.skeleton-loader').classes()).toEqual(['skeleton-loader', 'wave']);
+    });
+  });
+
+  describe('When skeleton is created using a custom animation', () => {
+    it('should add the animation class with `animation-` prefix', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        // @ts-expect-error custom animations need to be registered via declaration merging
+        props: { animation: 'my-wave' },
+      });
+      expect(wrapper.find('.skeleton-loader').classes()).toEqual([
+        'skeleton-loader',
+        'animation-my-wave',
+      ]);
+    });
+
+    it.each([false, 'false'] as const)(
+      'should NOT add any animation class if animation is %j',
+      (animation) => {
+        const wrapper = mount(VueSkeletonContentLoader, {
+          props: { animation },
+        });
+        expect(wrapper.find('.skeleton-loader').classes()).toEqual(['skeleton-loader']);
+      },
+    );
+  });
+
+  describe('When skeleton is created with multiple items', () => {
+    it('should expose the index of each item via `--vue-skeleton-content-loader-index`', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { count: 3 },
+      });
+      const indexes = wrapper
+        .findAll('.skeleton-loader')
+        .map((skeleton) =>
+          (skeleton.element as HTMLElement).style.getPropertyValue(
+            '--vue-skeleton-content-loader-index',
+          ),
+        );
+      expect(indexes).toEqual(['0', '1', '2']);
+    });
+  });
+
+  describe('When skeleton is created with color scheme', () => {
+    it.each([
+      ['auto', 'light dark'],
+      ['dark', 'dark'],
+    ] as const)('should add `color-scheme` style if color scheme is %j', (colorScheme, value) => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { colorScheme },
+      });
+      expect(wrapper.find('.skeleton-loader').attributes('style')).toContain(
+        `color-scheme: ${value};`,
+      );
+    });
+
+    it('should NOT add `color-scheme` style by default (light)', () => {
+      const wrapper = mount(VueSkeletonContentLoader);
+      expect(wrapper.find('.skeleton-loader').attributes('style')).not.toContain('color-scheme');
     });
   });
 });

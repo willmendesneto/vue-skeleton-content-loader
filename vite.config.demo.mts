@@ -10,6 +10,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(import.meta.dirname, 'src'),
+      // Demo imports the package as consumers do, using its source files
+      'vue-skeleton-content-loader': resolve(import.meta.dirname, 'src/index.ts'),
     },
   },
   server: {

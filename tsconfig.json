@@ -23,9 +23,10 @@
 
     /* Paths */
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "vue-skeleton-content-loader": ["./src/index.ts"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "demo/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "demo/**/*.vue", "demo/**/*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

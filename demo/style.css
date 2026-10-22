@@ -64,3 +64,18 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+/* Custom skeleton animation, registered in `demo/env.d.ts` */
+.skeleton-loader.animation-shine {
+  animation: shine 1.5s ease-in-out infinite;
+  animation-delay: calc(
+    var(--vue-skeleton-content-loader-index, 0) *
+      var(--vue-skeleton-content-loader-animation-stagger, 0s)
+  );
+}
+
+@keyframes shine {
+  50% {
+    background-color: #ffe9a8;
+  }
+}

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Breaking Change
 
-- Declaring `vue` (`^3.5.0`) as `peerDependencies`. Previously, the package didn't declare its Vue dependency
+- Declaring `vue` (`^3.5.2`) as `peerDependencies`. Previously, the package didn't declare its Vue dependency. Vue v3.5.2 is the minimum version supported by the package type declarations
 - Renaming UMD output from `dist/vue-skeleton-content-loader.umd.js` to `dist/vue-skeleton-content-loader.umd.cjs`, since the package is `"type": "module"` and `.js` files are loaded as ES modules. It's now exposed via `unpkg`/`jsdelivr` fields and can be loaded via `require()`
 - A CSS unit passed in `size` (E.G: `size="10em"`) now takes precedence over `measure-unit`, instead of being ignored
 - `VueSkeletonContentLoader` now renders a single root element (`<div>`, a block element) wrapping the skeleton items, instead of rendering skeleton items as multiple root elements. Skeletons placed side by side without a flex or grid container are now rendered in separate lines. Attributes that are not props (E.G: `class`, `style`, `id` or `data-*`) are now added in the root element, instead of being ignored with a Vue warning
@@ -24,7 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Replacing `bundlesize` with `bundlesize2`, since `bundlesize` native dependencies don't work in Node.js v24
 - Removing unused dev dependencies and configurations
 - Adding CI via GitHub Actions: lint (including formatting), type check, unit tests, build, bundle size, SSR rendering of the built package (`npm run test:ssr`) and demo build, plus Dependabot updates for GitHub Actions
-- Checking the packed package with the minimum `vue` version from `peerDependencies` in CI (`npm run check:min-peer`)
+- Checking the packed package with the minimum `vue` version from `peerDependencies` in CI (`npm run check:min-peer`), including SSR rendering and type checking of a consumer app using the package type declarations
+- Keeping modern CSS as is in the package build (`build.cssTarget: 'esnext'`), since consumers' bundlers handle their own browser targets
 - Publishing only `dist`, `index.js` and `CHANGELOG.md` files (besides `README.md`, `LICENSE` and `package.json`) via `files` field, instead of `.npmignore`
 - Rendering skeletons via `v-for` over a number instead of creating an array
 - Using a single class binding for skeleton items, computed once for all of them, instead of one binding per appearance/animation class
@@ -40,9 +41,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Adding `./style.css` and `./package.json` to package `exports`, and `sideEffects` field, so bundlers can tree-shake the package safely
 - Adding docs about CDN usage (UMD build) and minimum Vue version on `README.md` file
 - Adding docs about rendered HTML, accessibility and theming via CSS custom properties on `README.md` file
+- Adding `wave` animation, similar to `progress` but with an oblique shimmer
+- Adding stagger effect via `--vue-skeleton-content-loader-animation-stagger` CSS custom property (`0s` by default), delaying each item animation based on its index. Items also expose their index via `--vue-skeleton-content-loader-index`, which can be used in custom animations
+- Adding right-to-left (RTL) support for `progress`, `progress-dark` and `wave` animations: the shimmer crosses the skeleton from right to left when an ancestor element (or the component itself) has `dir="rtl"`
+- Adding opt-in dark mode via `color-scheme` prop (`auto` follows the user's color scheme preference, `dark` forces dark colors) or via `--vue-skeleton-content-loader-color-scheme` CSS custom property, using `light-dark()` for the default base and shimmer colors. Browsers without `light-dark()` support keep the light colors
+- Adding support for type-safe custom animations. Consumers can register their own animation names by extending `VueSkeletonContentLoaderCustomAnimations` interface via TypeScript declaration merging, and use them via `animation` prop. They are rendered as CSS class with `animation-` prefix (E.G: `animation="my-wave"` renders `.skeleton-loader.animation-my-wave`) and disabled automatically - including the ones applied to `::before`/`::after` - when user prefers reduced motion
+- Accepting `undefined` values in `theme` prop, removing the style
+- Adding examples of the new features in the demo page, which now imports the package as consumers do
 
 ### Fixed
 
+- Fixing type declarations of the component slot referencing an internal type (`__VLS_2`), which raised TypeScript errors in apps with `skipLibCheck: false`
 - Fixing CSS custom properties being ignored when set in an ancestor element, such as `:root`, `body` or a wrapper element. Now they are consumed with their default values as fallback, keeping the `:theme` support
 - Fixing `main` field in `package.json`, pointing to a file that doesn't exist (`./dist/index.js`)
 - Fixing `size` for `square` appearance ignoring decimal values (E.G: `1.5` became `15`) and CSS units passed in `size` (E.G: `10rem` became `10px`). Invalid values (E.G: `abc`) don't add `width`/`height` styles anymore, instead of adding `0px`

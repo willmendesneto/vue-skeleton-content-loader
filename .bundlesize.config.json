@@ -6,11 +6,11 @@
     },
     {
       "path": "dist/vue-skeleton-content-loader.umd.cjs",
-      "maxSize": "966B"
+      "maxSize": "1062B"
     },
     {
       "path": "dist/style.css",
-      "maxSize": "762B"
+      "maxSize": "954B"
     }
   ]
 }

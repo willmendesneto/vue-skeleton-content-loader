@@ -44,7 +44,7 @@ You can get it on NPM by installing the `vue-skeleton-content-loader` module as 
 npm install vue-skeleton-content-loader --save
 ```
 
-> Requires Vue v3.5 or higher.
+> Requires Vue v3.5.2 or higher.
 
 ### Using via CDN
 
@@ -119,6 +119,7 @@ After global registration, you can use `<VueSkeletonContentLoader>` directly in 
 - `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number, number as string or number with CSS unit (E.G: `40`, `"1.5"` or `"10rem"`). A CSS unit passed in `size` takes precedence over `measure-unit`. Invalid values don't add `width`/`height` styles. It also supports `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
 - `loadingText` - _default_ `Loading...`: attribute that defines the text value for `aria-valuetext` attribute. Defaults to "Loading..."
 - `aria-label` - _default_ `loading`: you can add `ariaLabel` as input of the component to set a different value.
+- `color-scheme` - _default_ `light`: Defines the color scheme of the default colors: `light`, `dark` or `auto` (follows the user's preference). See [Color scheme (dark mode)](#color-scheme-dark-mode) for details.
 
 ### Rendered HTML and accessibility
 
@@ -166,6 +167,8 @@ You can also define which CSS animation you want to use - even not use any, if i
 - `progress-dark`: it will use it `progress-dark` as animation. Recommended if your color schema is darken;
 - `pulse`: it will use `pulse` as animation;
 - `pulse-dark`: it will use it `pulse-dark` as animation. Recommended if your color schema is darken;
+- `wave`: it will use `wave` as animation. Similar to `progress`, but with an oblique shimmer;
+- Custom animations: see [Custom animations](#custom-animations).
 
 > `progress` is the default animation, used as the single one previously. If you don't pass the animation attribute, it defaults to `progress`.
 
@@ -188,6 +191,69 @@ You can also define which CSS animation you want to use - even not use any, if i
 ```
 
 > You can check the code details in the [Stackblitz Live Demo Link](https://stackblitz.com/edit/vue-skeleton-content-loader-sample?file=app%2Fapp.component.html)
+
+### Stagger effect
+
+Each skeleton item animation can be delayed based on its index, via `--vue-skeleton-content-loader-animation-stagger` CSS custom property (`0s` by default: no delay). Items also expose their index (from `0`) via `--vue-skeleton-content-loader-index`, which can be used in custom animations.
+
+```html
+<!-- Each item starts its animation 0.2s after the previous one -->
+<VueSkeletonContentLoader count="5" style="--vue-skeleton-content-loader-animation-stagger: 0.2s" />
+```
+
+### Right-to-left (RTL) layouts
+
+`progress`, `progress-dark` and `wave` shimmers cross the skeleton from right to left when an ancestor element - or the component itself - has `dir="rtl"` attribute.
+
+```html
+<div dir="rtl">
+  <VueSkeletonContentLoader count="3" />
+</div>
+```
+
+### Custom animations
+
+You can use your own animations via `animation` prop. They are rendered as CSS class with `animation-` prefix (E.G: `animation="my-wave"` renders `.skeleton-loader.animation-my-wave`), avoiding collisions with internal classes.
+
+1. Register the animation name via TypeScript declaration merging, so it's a valid `animation` value (invalid names raise TypeScript errors in templates, via `vue-tsc`):
+
+```typescript
+// env.d.ts
+import 'vue-skeleton-content-loader';
+
+declare module 'vue-skeleton-content-loader' {
+  interface VueSkeletonContentLoaderCustomAnimations {
+    'my-wave': true;
+  }
+}
+```
+
+2. Add the animation styles in a global stylesheet (or via `:deep()`), since component styles are scoped:
+
+```css
+.skeleton-loader.animation-my-wave {
+  animation: my-wave 1.5s ease-in-out infinite;
+  /* Optional: using stagger effect */
+  animation-delay: calc(
+    var(--vue-skeleton-content-loader-index, 0) *
+      var(--vue-skeleton-content-loader-animation-stagger, 0s)
+  );
+}
+
+@keyframes my-wave {
+  50% {
+    background-color: #ffe9a8;
+  }
+}
+```
+
+3. Use it in the component:
+
+```html
+<VueSkeletonContentLoader animation="my-wave" />
+```
+
+> Custom animations - including the ones applied to `::before`/`::after` pseudo-elements - are disabled automatically when user prefers reduced motion.
 
 ## Theming
 
@@ -243,12 +309,15 @@ Skeletons can also be themed via CSS custom properties. They can be set in any a
 
 | CSS custom property | Default value |
 | --- | --- |
-| `--vue-skeleton-content-loader-base-color` | `rgb(239, 241, 246)` |
-| `--vue-skeleton-content-loader-light-mode-color` | `rgba(255, 255, 255, 0.6)` |
+| `--vue-skeleton-content-loader-color-scheme` | `light` (use `light dark` to follow the user's preference) |
+| `--vue-skeleton-content-loader-base-color` | `rgb(239, 241, 246)` (dark mode: `rgb(48, 52, 61)`) |
+| `--vue-skeleton-content-loader-light-mode-color` | `rgba(255, 255, 255, 0.6)` (dark mode: `rgba(255, 255, 255, 0.1)`) |
 | `--vue-skeleton-content-loader-light-mode-color-to` | `rgba(255, 255, 255, 0)` |
 | `--vue-skeleton-content-loader-dark-mode-color` | `rgba(0, 0, 0, 0.2)` |
 | `--vue-skeleton-content-loader-dark-mode-color-to` | `transparent` |
 | `--vue-skeleton-content-loader-animation-duration` | `2s` |
+| `--vue-skeleton-content-loader-animation-stagger` | `0s` (delay between items, based on their index) |
+| `--vue-skeleton-content-loader-index` | item index, set per item (read-only, for custom animations) |
 | `--vue-skeleton-content-loader-background-image-light-mode` | gradient based on light mode colors (`progress` animation) |
 | `--vue-skeleton-content-loader-background-image-dark-mode` | gradient based on dark mode colors (`progress-dark` animation) |
 
@@ -264,6 +333,26 @@ Skeletons can also be themed via CSS custom properties. They can be set in any a
 <!-- Applies to a single skeleton -->
 <VueSkeletonContentLoader :theme="{ '--vue-skeleton-content-loader-base-color': '#992929' }" />
 ```
+
+### Color scheme (dark mode)
+
+Dark mode is opt-in: skeletons use light colors by default. It can be enabled via `color-scheme` prop - `auto` follows the user's color scheme preference (OS and/or browser) and `dark` forces dark colors - or via `--vue-skeleton-content-loader-color-scheme` CSS custom property.
+
+```html
+<!-- Follows the user's preference -->
+<VueSkeletonContentLoader color-scheme="auto" />
+<!-- Forces dark colors -->
+<VueSkeletonContentLoader color-scheme="dark" />
+```
+
+```css
+/* Follows the user's preference in every skeleton of the page */
+:root {
+  --vue-skeleton-content-loader-color-scheme: light dark;
+}
+```
+
+> Default dark colors use CSS [`light-dark()`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark) function. Browsers without its support keep the light colors.
 
 ## Development
 
