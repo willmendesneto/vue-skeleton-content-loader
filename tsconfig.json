@@ -22,7 +22,6 @@
     "types": ["vitest/globals"],
 
     /* Paths */
-    "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
     }
