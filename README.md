@@ -7,7 +7,7 @@
 [![NPM](https://nodei.co/npm/vue-skeleton-content-loader.png?downloads=true&downloadRank=true&stars=true)](https://npmjs.org/vue-skeleton-content-loader)
 [![NPM](https://nodei.co/npm-dl/vue-skeleton-content-loader.png?height=3&months=3)](https://npmjs.org/vue-skeleton-content-loader)
 
-[![Build Status](https://circleci.com/gh/willmendesneto/vue-skeleton-content-loader.svg?style=shield)](https://circleci.com/gh/willmendesneto/vue-skeleton-content-loader)
+[![CI](https://github.com/willmendesneto/vue-skeleton-content-loader/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/willmendesneto/vue-skeleton-content-loader/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/willmendesneto/vue-skeleton-content-loader/badge.svg?branch=main)](https://coveralls.io/r/willmendesneto/vue-skeleton-content-loader?branch=main)
 [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/vue-skeleton-content-loader.svg)](https://bundlephobia.com/result?p=vue-skeleton-content-loader)
 [![npm](https://img.shields.io/npm/l/express.svg?maxAge=2592000)](/LICENSE)

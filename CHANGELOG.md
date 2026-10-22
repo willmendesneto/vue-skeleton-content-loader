@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
+### Changed
+
+- Upgrading project to Node.js v24, Vite v8, Vitest v5, ESLint v10 (flat config), TypeScript v6 and latest versions of other dev dependencies
+- Decreasing bundle size from 998B to 874B (ES) and from 966B to 938B (UMD) - gzip - by minifying the ES output and removing `Symbol.toStringTag` from the generated code
+- Replacing `bundlesize` with `bundlesize2`, since `bundlesize` native dependencies don't work in Node.js v24
+- Removing unused dev dependencies and configurations
+- Adding CI via GitHub Actions: lint (including formatting), type check, unit tests, build, bundle size, SSR rendering of the built package (`npm run test:ssr`) and demo build, plus Dependabot updates for GitHub Actions
+
 ## [1.2.0][] - 2025-08-27
 
 ### Added
