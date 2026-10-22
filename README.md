@@ -120,6 +120,23 @@ After global registration, you can use `<VueSkeletonContentLoader>` directly in 
 - `loadingText` - _default_ `Loading...`: attribute that defines the text value for `aria-valuetext` attribute. Defaults to "Loading..."
 - `aria-label` - _default_ `loading`: you can add `ariaLabel` as input of the component to set a different value.
 
+### Rendered HTML and accessibility
+
+`VueSkeletonContentLoader` renders a single root element (a block element, taking the full width of its container) wrapping the skeleton items. The root element has the WAI-ARIA attributes (`role="progressbar"`, `aria-busy`, `aria-valuemin`, `aria-valuemax`, `aria-label` and `aria-valuetext`), so screen readers announce a single progress bar per component. Skeleton items are hidden from assistive technologies via `aria-hidden="true"`.
+
+Attributes that are not props, such as `class`, `style`, `id` or `data-*`, are added in the root element.
+
+```html
+<VueSkeletonContentLoader count="3" class="my-skeleton" data-testid="skeleton" />
+
+<!-- Renders: -->
+<div role="progressbar" aria-busy="true" aria-valuemin="0" aria-valuemax="100" aria-label="loading" aria-valuetext="Loading..." class="my-skeleton" data-testid="skeleton">
+  <div class="skeleton-loader progress" aria-hidden="true"></div>
+  <div class="skeleton-loader progress" aria-hidden="true"></div>
+  <div class="skeleton-loader progress" aria-hidden="true"></div>
+</div>
+```
+
 ## Appearance
 
 You can also define which appearance you want to use in your skeleton loader by passing the options in your component via the `:appearance` prop.
@@ -219,6 +236,34 @@ The `:theme` prop now accepts the same configuration as Vue's `v-bind:style` dir
 ```
 
 > You should change the styles on the skeleton wrapper element in case you need to change the background color. You can check the code details in the [Stackblitz Live Demo Link](https://stackblitz.com/edit/vue-skeleton-content-loader-sample?file=app%2Fapp.component.html) or check out a content load simulation [in this Stackblitz Live Demo Link](https://stackblitz.com/edit/vue-skeleton-content-loader-user-card-component-sample?file=app%2Fapp.component.html)
+
+### Theming via CSS custom properties
+
+Skeletons can also be themed via CSS custom properties. They can be set in any ancestor element - such as `:root`, `body`, a wrapper element or the component itself (via `class` or `style` attributes) - or per skeleton item via `:theme` prop.
+
+| CSS custom property | Default value |
+| --- | --- |
+| `--vue-skeleton-content-loader-base-color` | `rgb(239, 241, 246)` |
+| `--vue-skeleton-content-loader-light-mode-color` | `rgba(255, 255, 255, 0.6)` |
+| `--vue-skeleton-content-loader-light-mode-color-to` | `rgba(255, 255, 255, 0)` |
+| `--vue-skeleton-content-loader-dark-mode-color` | `rgba(0, 0, 0, 0.2)` |
+| `--vue-skeleton-content-loader-dark-mode-color-to` | `transparent` |
+| `--vue-skeleton-content-loader-animation-duration` | `2s` |
+| `--vue-skeleton-content-loader-background-image-light-mode` | gradient based on light mode colors (`progress` animation) |
+| `--vue-skeleton-content-loader-background-image-dark-mode` | gradient based on dark mode colors (`progress-dark` animation) |
+
+```css
+/* Applies to every skeleton in the page */
+:root {
+  --vue-skeleton-content-loader-base-color: #e0e0e0;
+  --vue-skeleton-content-loader-animation-duration: 1.5s;
+}
+```
+
+```html
+<!-- Applies to a single skeleton -->
+<VueSkeletonContentLoader :theme="{ '--vue-skeleton-content-loader-base-color': '#992929' }" />
+```
 
 ## Development
 

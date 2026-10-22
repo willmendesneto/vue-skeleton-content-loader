@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Declaring `vue` (`^3.5.0`) as `peerDependencies`. Previously, the package didn't declare its Vue dependency
 - Renaming UMD output from `dist/vue-skeleton-content-loader.umd.js` to `dist/vue-skeleton-content-loader.umd.cjs`, since the package is `"type": "module"` and `.js` files are loaded as ES modules. It's now exposed via `unpkg`/`jsdelivr` fields and can be loaded via `require()`
 - A CSS unit passed in `size` (E.G: `size="10em"`) now takes precedence over `measure-unit`, instead of being ignored
+- `VueSkeletonContentLoader` now renders a single root element (`<div>`, a block element) wrapping the skeleton items, instead of rendering skeleton items as multiple root elements. Skeletons placed side by side without a flex or grid container are now rendered in separate lines. Attributes that are not props (E.G: `class`, `style`, `id` or `data-*`) are now added in the root element, instead of being ignored with a Vue warning
+- WAI-ARIA attributes (`role="progressbar"`, `aria-busy`, `aria-valuemin`, `aria-valuemax`, `aria-label` and `aria-valuetext`) are now applied once in the root element, instead of in every skeleton item, so screen readers announce a single progress bar per component. Skeleton items are hidden from assistive technologies via `aria-hidden="true"` and no longer have `tabindex="-1"`. Code or tests querying these attributes in `.skeleton-loader` items need to query the root element instead
+- Renaming CSS custom properties with `--vue-skeleton-content-loader-` prefix (E.G: `--base-color` is now `--vue-skeleton-content-loader-base-color`), avoiding collisions with CSS custom properties of the app
 
 #### Other Changes
 
@@ -24,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Checking the packed package with the minimum `vue` version from `peerDependencies` in CI (`npm run check:min-peer`)
 - Publishing only `dist`, `index.js` and `CHANGELOG.md` files (besides `README.md`, `LICENSE` and `package.json`) via `files` field, instead of `.npmignore`
 - Rendering skeletons via `v-for` over a number instead of creating an array
+- Using a single class binding for skeleton items, computed once for all of them, instead of one binding per appearance/animation class
 - Improving rendering performance by scoping CSS `will-change` to the animated parts only: `transform` on the `progress`/`progress-dark` shimmer and `opacity` on `pulse`/`pulse-dark`. Skeletons without animation, or rendered with `prefers-reduced-motion: reduce`, are no longer promoted to their own GPU layer. In the demo page, composited layers dropped from 146 to 84 with animations
 - Replacing `transform: translate3d(0, 0, 0)` with `isolation: isolate` in `progress`/`progress-dark` skeletons, keeping the shimmer clipped by `border-radius` without an extra GPU layer
 - Adding CSS containment (`contain: layout paint`) to skeletons, isolating their layout and paint work from the rest of the page. There are no visual changes, since skeletons were already using `overflow: hidden` and `position: relative`
@@ -35,9 +39,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Adding `./style.css` and `./package.json` to package `exports`, and `sideEffects` field, so bundlers can tree-shake the package safely
 - Adding docs about CDN usage (UMD build) and minimum Vue version on `README.md` file
+- Adding docs about rendered HTML, accessibility and theming via CSS custom properties on `README.md` file
 
 ### Fixed
 
+- Fixing CSS custom properties being ignored when set in an ancestor element, such as `:root`, `body` or a wrapper element. Now they are consumed with their default values as fallback, keeping the `:theme` support
 - Fixing `main` field in `package.json`, pointing to a file that doesn't exist (`./dist/index.js`)
 - Fixing `size` for `square` appearance ignoring decimal values (E.G: `1.5` became `15`) and CSS units passed in `size` (E.G: `10rem` became `10px`). Invalid values (E.G: `abc`) don't add `width`/`height` styles anymore, instead of adding `0px`
 - Fixing `custom-content` appearance rendering the slot content multiple times when `count` is bigger than `1`. `count` is now forced to `1`, with a warning in development mode

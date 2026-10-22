@@ -19,18 +19,24 @@ describe('VueSkeletonContentLoader', () => {
       wrapper = mount(VueSkeletonContentLoader);
     });
 
-    it('should add all relevant WAI-ARIA `aria-` attributes', () => {
+    it('should add all relevant WAI-ARIA `aria-` attributes in the root element', () => {
+      const root = wrapper.element;
+      expect(root.getAttribute('aria-busy')).toBe('true');
+      expect(root.getAttribute('aria-valuemin')).toBe('0');
+      expect(root.getAttribute('aria-valuemax')).toBe('100');
+      expect(root.getAttribute('aria-valuetext')).toBe('Loading...'); // Default loadingText
+      expect(root.getAttribute('role')).toBe('progressbar');
+      expect(root.getAttribute('aria-label')).toBe('loading'); // Default ariaLabel
+    });
+
+    it('should hide skeleton items from assistive technologies', () => {
       const skeletons = wrapper.findAll('.skeleton-loader');
       expect(skeletons.length).toBe(1); // Default count is 1
 
       skeletons.forEach((skeleton) => {
-        expect(skeleton.attributes('aria-busy')).toBe('true');
-        expect(skeleton.attributes('aria-valuemin')).toBe('0');
-        expect(skeleton.attributes('aria-valuemax')).toBe('100');
-        expect(skeleton.attributes('aria-valuetext')).toBe('Loading...'); // Default loadingText
-        expect(skeleton.attributes('role')).toBe('progressbar');
-        expect(skeleton.attributes('tabindex')).toBe('-1');
-        expect(skeleton.attributes('aria-label')).toBe('loading'); // Default ariaLabel
+        expect(skeleton.attributes('aria-hidden')).toBe('true');
+        expect(skeleton.attributes('role')).toBeUndefined();
+        expect(skeleton.attributes('tabindex')).toBeUndefined();
       });
     });
 
@@ -49,9 +55,7 @@ describe('VueSkeletonContentLoader', () => {
       const wrapper = mount(VueSkeletonContentLoader, {
         props: { loadingText: customLoadingText },
       });
-      expect(wrapper.find(`.skeleton-loader[aria-valuetext="${customLoadingText}"]`).exists()).toBe(
-        true,
-      );
+      expect(wrapper.attributes('aria-valuetext')).toBe(customLoadingText);
     });
   });
 
@@ -227,6 +231,53 @@ describe('VueSkeletonContentLoader', () => {
       expect(skeleton.attributes('style')).toContain('width: 70px;');
       expect(skeleton.attributes('style')).toContain('height: 70px;');
       expect(skeleton.attributes('style')).toContain('border-radius: 10px;');
+    });
+  });
+  describe('When skeleton receives attributes that are not props', () => {
+    it('should add them in the root element', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => null);
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { count: 2 },
+        attrs: { class: 'my-skeleton', 'data-testid': 'skeleton', ariaLabel: 'user' },
+      });
+      expect(wrapper.classes()).toContain('my-skeleton');
+      expect(wrapper.attributes('data-testid')).toBe('skeleton');
+      expect(wrapper.findAll('.skeleton-loader').length).toBe(2);
+      expect(warn).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('When skeleton is created with appearance and animation', () => {
+    it('should add a single class for each of them', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { appearance: 'circle', animation: 'pulse-dark' },
+      });
+      expect(wrapper.find('.skeleton-loader').classes()).toEqual([
+        'skeleton-loader',
+        'circle',
+        'pulse-dark',
+      ]);
+    });
+
+    it.each(['line', ''] as const)(
+      'should NOT add appearance class if appearance is %j',
+      (appearance) => {
+        const wrapper = mount(VueSkeletonContentLoader, {
+          props: { appearance, animation: false },
+        });
+        expect(wrapper.find('.skeleton-loader').classes()).toEqual(['skeleton-loader']);
+      },
+    );
+  });
+
+  describe('When skeleton is themed via CSS custom properties', () => {
+    it('should add them as item styles via `theme` prop', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { theme: { '--vue-skeleton-content-loader-base-color': 'red' } },
+      });
+      expect(wrapper.find('.skeleton-loader').attributes('style')).toContain(
+        '--vue-skeleton-content-loader-base-color: red;',
+      );
     });
   });
 });

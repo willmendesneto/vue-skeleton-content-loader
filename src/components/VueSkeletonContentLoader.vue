@@ -45,60 +45,52 @@
     ...(size.value && { width: size.value, height: size.value }),
     ...props.theme,
   }));
+
+  // NOTE: Template has a single root element, so attributes that are not props (e.g. `class`)
+  // fall through to it. It also has the WAI-ARIA attributes, rendering a single progress bar per
+  // component, while skeleton items are hidden from assistive technologies via `aria-hidden`
+
+  // Classes shared by all skeleton items, computed once instead of per item
+  const classes = computed(
+    () =>
+      // `RegExp.test()` converts values to string, including `animation` as boolean (`false`)
+      `skeleton-loader ${/^(circle|square|custom-content)$/.test(props.appearance) ? props.appearance : ''} ${
+        /^(progress|pulse)(-dark)?$/.test(props.animation as string) ? props.animation : ''
+      }`,
+  );
 </script>
 
 <template>
   <div
-    v-for="item in count"
-    :key="item"
-    :aria-label="props.ariaLabel"
+    role="progressbar"
     aria-busy="true"
     aria-valuemin="0"
     aria-valuemax="100"
+    :aria-label="props.ariaLabel"
     :aria-valuetext="props.loadingText"
-    role="progressbar"
-    tabindex="-1"
-    :class="[
-      'skeleton-loader',
-      {
-        'custom-content': props.appearance === 'custom-content',
-        circle: props.appearance === 'circle',
-        square: props.appearance === 'square',
-        progress: props.animation === 'progress',
-        'progress-dark': props.animation === 'progress-dark',
-        pulse: props.animation === 'pulse',
-        'pulse-dark': props.animation === 'pulse-dark',
-      },
-    ]"
-    :style="styles"
   >
-    <template v-if="props.appearance === 'custom-content'">
-      <slot></slot>
-    </template>
+    <div v-for="item in count" :key="item" :class="classes" aria-hidden="true" :style="styles">
+      <slot v-if="props.appearance === 'custom-content'"></slot>
+    </div>
   </div>
 </template>
 
 <style scoped>
   .skeleton-loader {
-    --base-color: rgb(239, 241, 246);
-    --light-mode-color: rgba(255, 255, 255, 0.6);
-    --light-mode-color-to: rgba(255, 255, 255, 0);
-    --dark-mode-color: rgba(0, 0, 0, 0.2);
-    --dark-mode-color-to: transparent;
-    --animation-duration: 2s;
-    --background-image-light-mode: linear-gradient(
-      90deg,
-      var(--light-mode-color-to),
-      var(--light-mode-color),
-      var(--light-mode-color-to)
-    );
-    --background-image-dark-mode: linear-gradient(
-      90deg,
-      var(--dark-mode-color-to),
-      var(--dark-mode-color),
-      var(--dark-mode-color-to)
-    );
-
+    /**
+      * CSS custom properties are NOT declared in here, only consumed with a fallback value.
+      * Declaring them in `.skeleton-loader` would override any value set in an ancestor element
+      * (e.g. `:root`, `body` or a wrapper), making them customizable only via `theme` prop.
+      * Available CSS custom properties (and their default values):
+      * - `--vue-skeleton-content-loader-base-color`: rgb(239, 241, 246)
+      * - `--vue-skeleton-content-loader-light-mode-color`: rgba(255, 255, 255, 0.6)
+      * - `--vue-skeleton-content-loader-light-mode-color-to`: rgba(255, 255, 255, 0)
+      * - `--vue-skeleton-content-loader-dark-mode-color`: rgba(0, 0, 0, 0.2)
+      * - `--vue-skeleton-content-loader-dark-mode-color-to`: transparent
+      * - `--vue-skeleton-content-loader-animation-duration`: 2s
+      * - `--vue-skeleton-content-loader-background-image-light-mode`: gradient based on light mode colors
+      * - `--vue-skeleton-content-loader-background-image-dark-mode`: gradient based on dark mode colors
+      */
     box-sizing: border-box;
     /**
       * `overflow` and `position` are required steps to make sure
@@ -113,7 +105,7 @@
       * More details in https://developer.mozilla.org/en-US/docs/Web/CSS/contain
       */
     contain: layout paint;
-    background: var(--base-color) no-repeat;
+    background: var(--vue-skeleton-content-loader-base-color, rgb(239, 241, 246)) no-repeat;
     border-radius: 4px;
     width: 100%;
     height: 20px;
@@ -152,7 +144,8 @@
   .skeleton-loader.progress-dark:before {
     box-sizing: border-box;
     will-change: transform;
-    animation: progress var(--animation-duration) ease-in-out infinite;
+    animation: progress var(--vue-skeleton-content-loader-animation-duration, 2s) ease-in-out
+      infinite;
     background: no-repeat right / 200px 100%;
     position: absolute;
     z-index: 1;
@@ -163,10 +156,26 @@
     content: '';
   }
   .skeleton-loader.progress:before {
-    background-image: var(--background-image-light-mode);
+    background-image: var(
+      --vue-skeleton-content-loader-background-image-light-mode,
+      linear-gradient(
+        90deg,
+        var(--vue-skeleton-content-loader-light-mode-color-to, rgba(255, 255, 255, 0)),
+        var(--vue-skeleton-content-loader-light-mode-color, rgba(255, 255, 255, 0.6)),
+        var(--vue-skeleton-content-loader-light-mode-color-to, rgba(255, 255, 255, 0))
+      )
+    );
   }
   .skeleton-loader.progress-dark:before {
-    background-image: var(--background-image-dark-mode);
+    background-image: var(
+      --vue-skeleton-content-loader-background-image-dark-mode,
+      linear-gradient(
+        90deg,
+        var(--vue-skeleton-content-loader-dark-mode-color-to, transparent),
+        var(--vue-skeleton-content-loader-dark-mode-color, rgba(0, 0, 0, 0.2)),
+        var(--vue-skeleton-content-loader-dark-mode-color-to, transparent)
+      )
+    );
   }
 
   /**
@@ -175,10 +184,11 @@
   .skeleton-loader.pulse,
   .skeleton-loader.pulse-dark {
     will-change: opacity;
-    animation: pulse var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1) 0.5s infinite;
+    animation: pulse var(--vue-skeleton-content-loader-animation-duration, 2s)
+      cubic-bezier(0.4, 0, 0.2, 1) 0.5s infinite;
   }
   .skeleton-loader.pulse-dark {
-    background: var(--dark-mode-color);
+    background: var(--vue-skeleton-content-loader-dark-mode-color, rgba(0, 0, 0, 0.2));
   }
   .skeleton-loader.custom-content {
     height: 100%;
