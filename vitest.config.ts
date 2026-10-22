@@ -1,25 +1,17 @@
 import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
-import vitePluginDts from 'vite-plugin-dts';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 export default defineConfig({
-  plugins: [
-    vue(),
-    vitePluginDts({
-      // this is an expensive operation that is necessary so that we can
-      // know exactly where to reference types in the package exports
-      rollupTypes: true,
-    }),
-  ],
+  plugins: [vue()],
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: [resolve(__dirname, 'vitest.setup.ts')],
+    setupFiles: [resolve(import.meta.dirname, 'vitest.setup.ts')],
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(import.meta.dirname, 'src'),
     },
     extensions: ['.js', '.ts', '.vue', '.json'],
   },

@@ -1,27 +1,34 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueJsx from '@vitejs/plugin-vue-jsx';
 import dts from 'vite-plugin-dts';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 export default defineConfig({
-  plugins: [vue(), vueJsx(), dts({ rollupTypes: true })],
+  plugins: [vue(), dts({ bundleTypes: true, include: ['src'], exclude: ['src/**/*.spec.ts'] })],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(import.meta.dirname, 'src'),
     },
   },
   build: {
+    // Keeps modern CSS as is (e.g. `:dir()` and `light-dark()`): consumers' bundlers handle
+    // their own browser targets, and transpiling it changes its behavior (e.g. `:dir()` into `:lang()`)
+    cssTarget: 'esnext',
     lib: {
       entry: {
-        'vue-skeleton-content-loader': resolve(__dirname, 'src/index.ts'),
+        'vue-skeleton-content-loader': resolve(import.meta.dirname, 'src/index.ts'),
       },
       name: 'VueSkeletonContentLoader',
-      fileName: (format, entryName) => `${entryName}.${format}.js`,
+      // UMD output uses `.cjs` extension, since the package is `"type": "module"`
+      fileName: (format, entryName) => `${entryName}.${format}.${format === 'umd' ? 'cjs' : 'js'}`,
+      // Keeps `dist/style.css` name, imported by `index.js`
+      cssFileName: 'style',
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['vue'],
       output: {
+        minify: true,
+        generatedCode: { symbols: false },
         globals: {
           vue: 'Vue',
         },

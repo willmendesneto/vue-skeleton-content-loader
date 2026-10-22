@@ -7,8 +7,7 @@
 [![NPM](https://nodei.co/npm/vue-skeleton-content-loader.png?downloads=true&downloadRank=true&stars=true)](https://npmjs.org/vue-skeleton-content-loader)
 [![NPM](https://nodei.co/npm-dl/vue-skeleton-content-loader.png?height=3&months=3)](https://npmjs.org/vue-skeleton-content-loader)
 
-[![Build Status](https://circleci.com/gh/willmendesneto/vue-skeleton-content-loader.svg?style=shield)](https://circleci.com/gh/willmendesneto/vue-skeleton-content-loader)
-[![Coverage Status](https://coveralls.io/repos/willmendesneto/vue-skeleton-content-loader/badge.svg?branch=main)](https://coveralls.io/r/willmendesneto/vue-skeleton-content-loader?branch=main)
+[![CI](https://github.com/willmendesneto/vue-skeleton-content-loader/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/willmendesneto/vue-skeleton-content-loader/actions/workflows/ci.yml)
 [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/vue-skeleton-content-loader.svg)](https://bundlephobia.com/result?p=vue-skeleton-content-loader)
 [![npm](https://img.shields.io/npm/l/express.svg?maxAge=2592000)](/LICENSE)
 
@@ -43,6 +42,23 @@ You can get it on NPM by installing the `vue-skeleton-content-loader` module as 
 
 ```shell
 npm install vue-skeleton-content-loader --save
+```
+
+> Requires Vue v3.5.2 or higher.
+
+### Using via CDN
+
+The package also provides an UMD build, exposing the component via `VueSkeletonContentLoader` global variable. It requires Vue's global build and the package styles to be loaded in the page.
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/vue-skeleton-content-loader/dist/style.css" />
+<script src="https://unpkg.com/vue/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue-skeleton-content-loader"></script>
+<script>
+  const app = Vue.createApp({});
+  app.component('VueSkeletonContentLoader', VueSkeletonContentLoader.VueSkeletonContentLoader);
+  app.mount('#app');
+</script>
 ```
 
 ## Usage
@@ -82,8 +98,7 @@ For global availability across your application, you can register `VueSkeletonCo
 // main.ts or main.js
 import { createApp } from 'vue';
 import App from './App.vue';
-// Note: import default export for global registration
-import VueSkeletonContentLoader from 'vue-skeleton-content-loader';
+import { VueSkeletonContentLoader } from 'vue-skeleton-content-loader';
 
 const app = createApp(App);
 // Register globally
@@ -97,13 +112,31 @@ After global registration, you can use `<VueSkeletonContentLoader>` directly in 
 
 `VueSkeletonContentLoader` accepts several props to customize its behavior and appearance:
 
-- `count` - _default_ `1`: Number of skeleton lines/shapes to render.
+- `count` - _default_ `1`: Number of skeleton lines/shapes to render. Invalid values (E.G: `0` or `"abc"`) render a single skeleton. It's always `1` when `appearance` is `custom-content`.
 - `animation` - _default_ `progress`: Defines the CSS animation. See [Animations](#animations) for options.
 - `appearance` - _default_ `line`: Defines the shape of the skeleton. See [Appearance](#appearance) for options.
 - `theme` - _default_ `null`: An object containing CSS styles to apply to the skeleton. See [Theming](#theming) for details.
-- `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number or number as string (E.G: `"40"` or `40`). It also supports `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
+- `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number, number as string or number with CSS unit (E.G: `40`, `"1.5"` or `"10rem"`). A CSS unit passed in `size` takes precedence over `measure-unit`. Invalid values don't add `width`/`height` styles. It also supports `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
 - `loadingText` - _default_ `Loading...`: attribute that defines the text value for `aria-valuetext` attribute. Defaults to "Loading..."
 - `aria-label` - _default_ `loading`: you can add `ariaLabel` as input of the component to set a different value.
+- `color-scheme` - _default_ `light`: Defines the color scheme of the default colors: `light`, `dark` or `auto` (follows the user's preference). See [Color scheme (dark mode)](#color-scheme-dark-mode) for details.
+
+### Rendered HTML and accessibility
+
+`VueSkeletonContentLoader` renders a single root element (a block element, taking the full width of its container) wrapping the skeleton items. The root element has the WAI-ARIA attributes (`role="progressbar"`, `aria-busy`, `aria-valuemin`, `aria-valuemax`, `aria-label` and `aria-valuetext`), so screen readers announce a single progress bar per component. Skeleton items are hidden from assistive technologies via `aria-hidden="true"`.
+
+Attributes that are not props, such as `class`, `style`, `id` or `data-*`, are added in the root element.
+
+```html
+<VueSkeletonContentLoader count="3" class="my-skeleton" data-testid="skeleton" />
+
+<!-- Renders: -->
+<div role="progressbar" aria-busy="true" aria-valuemin="0" aria-valuemax="100" aria-label="loading" aria-valuetext="Loading..." class="my-skeleton" data-testid="skeleton">
+  <div class="skeleton-loader progress" aria-hidden="true" style="--vue-skeleton-content-loader-index: 0"></div>
+  <div class="skeleton-loader progress" aria-hidden="true" style="--vue-skeleton-content-loader-index: 1"></div>
+  <div class="skeleton-loader progress" aria-hidden="true" style="--vue-skeleton-content-loader-index: 2"></div>
+</div>
+```
 
 ## Appearance
 
@@ -115,7 +148,7 @@ You can also define which appearance you want to use in your skeleton loader by 
 - `line`: it will render like a line. This is the same behavior as passing an empty string;
 - `circle`: it will use `circle` as appearance. Great for avatar skeletons, for example :);
 - `square`: it will use `square` as appearance and render it appropriately. Great for cards and images, for example; It also requires `size` to be passed through the component - `size` has default size of `40px` and it has `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
-- `custom-content`: it will NOT add any appearance. Great for custom content, such as SVG, internal components and such. Although not rendering appearance, animation will be added unless component has `animation="false"` prop;
+- `custom-content`: it will NOT add any appearance. Great for custom content, such as SVG, internal components and such. Although not rendering appearance, animation will be added unless component has `animation="false"` prop. It renders a single skeleton, even if `count` is bigger than `1`;
 
 ### Appearance props (specific for `square`)
 
@@ -134,6 +167,8 @@ You can also define which CSS animation you want to use - even not use any, if i
 - `progress-dark`: it will use it `progress-dark` as animation. Recommended if your color schema is darken;
 - `pulse`: it will use `pulse` as animation;
 - `pulse-dark`: it will use it `pulse-dark` as animation. Recommended if your color schema is darken;
+- `wave`: it will use `wave` as animation. Similar to `progress`, but with an oblique shimmer;
+- Custom animations: see [Custom animations](#custom-animations).
 
 > `progress` is the default animation, used as the single one previously. If you don't pass the animation attribute, it defaults to `progress`.
 
@@ -156,6 +191,69 @@ You can also define which CSS animation you want to use - even not use any, if i
 ```
 
 > You can check the code details in the [Stackblitz Live Demo Link](https://stackblitz.com/edit/vue-skeleton-content-loader-sample?file=app%2Fapp.component.html)
+
+### Stagger effect
+
+Each skeleton item animation can be delayed based on its index, via `--vue-skeleton-content-loader-animation-stagger` CSS custom property (`0s` by default: no delay). Items also expose their index (from `0`) via `--vue-skeleton-content-loader-index`, which can be used in custom animations.
+
+```html
+<!-- Each item starts its animation 0.2s after the previous one -->
+<VueSkeletonContentLoader count="5" style="--vue-skeleton-content-loader-animation-stagger: 0.2s" />
+```
+
+### Right-to-left (RTL) layouts
+
+`progress`, `progress-dark` and `wave` shimmers cross the skeleton from right to left when an ancestor element - or the component itself - has `dir="rtl"` attribute.
+
+```html
+<div dir="rtl">
+  <VueSkeletonContentLoader count="3" />
+</div>
+```
+
+### Custom animations
+
+You can use your own animations via `animation` prop. They are rendered as CSS class with `animation-` prefix (E.G: `animation="my-wave"` renders `.skeleton-loader.animation-my-wave`), avoiding collisions with internal classes.
+
+1. Register the animation name via TypeScript declaration merging, so it's a valid `animation` value (invalid names raise TypeScript errors in templates, via `vue-tsc`):
+
+```typescript
+// env.d.ts
+import 'vue-skeleton-content-loader';
+
+declare module 'vue-skeleton-content-loader' {
+  interface VueSkeletonContentLoaderCustomAnimations {
+    'my-wave': true;
+  }
+}
+```
+
+2. Add the animation styles in a global stylesheet (or via `:deep()`), since component styles are scoped:
+
+```css
+.skeleton-loader.animation-my-wave {
+  animation: my-wave 1.5s ease-in-out infinite;
+  /* Optional: using stagger effect */
+  animation-delay: calc(
+    var(--vue-skeleton-content-loader-index, 0) *
+      var(--vue-skeleton-content-loader-animation-stagger, 0s)
+  );
+}
+
+@keyframes my-wave {
+  50% {
+    background-color: #ffe9a8;
+  }
+}
+```
+
+3. Use it in the component:
+
+```html
+<VueSkeletonContentLoader animation="my-wave" />
+```
+
+> Custom animations - including the ones applied to `::before`/`::after` pseudo-elements - are disabled automatically when user prefers reduced motion.
 
 ## Theming
 
@@ -204,6 +302,90 @@ The `:theme` prop now accepts the same configuration as Vue's `v-bind:style` dir
 ```
 
 > You should change the styles on the skeleton wrapper element in case you need to change the background color. You can check the code details in the [Stackblitz Live Demo Link](https://stackblitz.com/edit/vue-skeleton-content-loader-sample?file=app%2Fapp.component.html) or check out a content load simulation [in this Stackblitz Live Demo Link](https://stackblitz.com/edit/vue-skeleton-content-loader-user-card-component-sample?file=app%2Fapp.component.html)
+
+### Theming via CSS custom properties
+
+Skeletons can also be themed via CSS custom properties. They can be set in any ancestor element - such as `:root`, `body`, a wrapper element or the component itself (via `class` or `style` attributes) - or per skeleton item via `:theme` prop.
+
+| CSS custom property | Default value |
+| --- | --- |
+| `--vue-skeleton-content-loader-color-scheme` | `light` (use `light dark` to follow the user's preference) |
+| `--vue-skeleton-content-loader-base-color` | `rgb(239, 241, 246)` (dark mode: `rgb(48, 52, 61)`) |
+| `--vue-skeleton-content-loader-light-mode-color` | `rgba(255, 255, 255, 0.6)` (dark mode: `rgba(255, 255, 255, 0.1)`) |
+| `--vue-skeleton-content-loader-light-mode-color-to` | `rgba(255, 255, 255, 0)` |
+| `--vue-skeleton-content-loader-dark-mode-color` | `rgba(0, 0, 0, 0.2)` |
+| `--vue-skeleton-content-loader-dark-mode-color-to` | `transparent` |
+| `--vue-skeleton-content-loader-animation-duration` | `2s` |
+| `--vue-skeleton-content-loader-animation-stagger` | `0s` (delay between items, based on their index) |
+| `--vue-skeleton-content-loader-index` | item index, set per item (read-only, for custom animations) |
+| `--vue-skeleton-content-loader-background-image-light-mode` | gradient based on light mode colors (`progress` animation) |
+| `--vue-skeleton-content-loader-background-image-dark-mode` | gradient based on dark mode colors (`progress-dark` animation) |
+
+```css
+/* Applies to every skeleton in the page */
+:root {
+  --vue-skeleton-content-loader-base-color: #e0e0e0;
+  --vue-skeleton-content-loader-animation-duration: 1.5s;
+}
+```
+
+```html
+<!-- Applies to a single skeleton -->
+<VueSkeletonContentLoader :theme="{ '--vue-skeleton-content-loader-base-color': '#992929' }" />
+```
+
+### Color scheme (dark mode)
+
+Dark mode is opt-in: skeletons use light colors by default. It can be enabled via `color-scheme` prop - `auto` follows the user's color scheme preference (OS and/or browser) and `dark` forces dark colors - or via `--vue-skeleton-content-loader-color-scheme` CSS custom property.
+
+```html
+<!-- Follows the user's preference -->
+<VueSkeletonContentLoader color-scheme="auto" />
+<!-- Forces dark colors -->
+<VueSkeletonContentLoader color-scheme="dark" />
+```
+
+```css
+/* Follows the user's preference in every skeleton of the page */
+:root {
+  --vue-skeleton-content-loader-color-scheme: light dark;
+}
+```
+
+> Default dark colors use CSS [`light-dark()`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark) function. Browsers without its support keep the light colors.
+
+## Migrating from v1 to v2
+
+v2 has a few breaking changes. Please check the list below before upgrading:
+
+- **Vue v3.5.2 or higher** is required, declared as `peerDependencies`.
+- **Single root element**: skeleton items are now wrapped by a `<div>` (block element). Skeletons placed side by side without a flex or grid container are now rendered in separate lines. Attributes that are not props (E.G: `class`, `style`, `id` or `data-*`) are now added in this root element, instead of being ignored.
+- **WAI-ARIA attributes** (`role="progressbar"`, `aria-busy`, `aria-valuemin`, `aria-valuemax`, `aria-label` and `aria-valuetext`) are now in the root element, instead of in every `.skeleton-loader` item. Items have `aria-hidden="true"` and no longer have `tabindex="-1"`. Update code or tests querying these attributes in `.skeleton-loader` items:
+
+```js
+// v1
+wrapper.find('.skeleton-loader').attributes('aria-valuetext');
+// v2
+wrapper.attributes('aria-valuetext');
+```
+
+- **CSS custom properties** are prefixed with `--vue-skeleton-content-loader-`, and they can be set in any ancestor element now:
+
+| v1 | v2 |
+| --- | --- |
+| `--base-color` | `--vue-skeleton-content-loader-base-color` |
+| `--light-mode-color` | `--vue-skeleton-content-loader-light-mode-color` |
+| `--light-mode-color-to` | `--vue-skeleton-content-loader-light-mode-color-to` |
+| `--dark-mode-color` | `--vue-skeleton-content-loader-dark-mode-color` |
+| `--dark-mode-color-to` | `--vue-skeleton-content-loader-dark-mode-color-to` |
+| `--animation-duration` | `--vue-skeleton-content-loader-animation-duration` |
+| `--background-image-light-mode` | `--vue-skeleton-content-loader-background-image-light-mode` |
+| `--background-image-dark-mode` | `--vue-skeleton-content-loader-background-image-dark-mode` |
+
+- **UMD output** is renamed from `dist/vue-skeleton-content-loader.umd.js` to `dist/vue-skeleton-content-loader.umd.cjs`. Prefer loading it via CDN using the package name (E.G: `https://unpkg.com/vue-skeleton-content-loader`), as described in [Using via CDN](#using-via-cdn).
+- **`size` prop**: a CSS unit passed in `size` (E.G: `size="10em"`) now takes precedence over `measure-unit`, and decimal values are kept (E.G: `size="1.5"` renders `1.5px` instead of `15px`). Invalid values don't add `width`/`height` styles.
+- **`count` prop**: invalid values (E.G: `0` or `"abc"`) render a single skeleton, instead of none. `custom-content` appearance always renders a single skeleton.
+- **`animation` prop**: values that are not built-in animations are rendered as `animation-<value>` CSS class (custom animations), instead of being ignored. See [Custom animations](#custom-animations).
 
 ## Development
 

@@ -5,8 +5,12 @@
       "maxSize": "998B"
     },
     {
-      "path": "dist/vue-skeleton-content-loader.umd.js",
-      "maxSize": "966B"
+      "path": "dist/vue-skeleton-content-loader.umd.cjs",
+      "maxSize": "1062B"
+    },
+    {
+      "path": "dist/style.css",
+      "maxSize": "954B"
     }
   ]
 }

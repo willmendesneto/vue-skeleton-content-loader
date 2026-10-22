@@ -1,6 +1,9 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue';
-  import { VueSkeletonContentLoader, VueSkeletonContentLoaderConfig } from '@/index';
+  import {
+    VueSkeletonContentLoader,
+    VueSkeletonContentLoaderConfig,
+  } from 'vue-skeleton-content-loader';
 
   const intervalId = ref<number | null>(null);
   const contentLoaded = ref(false);
@@ -376,6 +379,77 @@
       </div>
     </VueSkeletonContentLoader>
   </div>
+  <br />
+  <br />
+  <h3>Skeleton using `wave` animation</h3>
+
+  <div class="item">
+    <VueSkeletonContentLoader count="3" animation="wave" :theme="{ height: '50px' }" />
+  </div>
+
+  <h3>Skeleton using stagger effect</h3>
+  <p>
+    Each item animation is delayed based on its index and
+    `--vue-skeleton-content-loader-animation-stagger` CSS custom property (`0s` by default)
+  </p>
+
+  <div class="item">
+    <VueSkeletonContentLoader
+      count="5"
+      animation="pulse"
+      style="--vue-skeleton-content-loader-animation-stagger: 0.2s"
+    />
+  </div>
+
+  <h3>Skeleton in right-to-left (RTL) layout</h3>
+  <p>`progress`, `progress-dark` and `wave` shimmers cross the skeleton from right to left</p>
+
+  <div class="item" dir="rtl">
+    <VueSkeletonContentLoader count="3" animation="progress" />
+  </div>
+
+  <h3>Skeleton with color scheme (dark mode)</h3>
+  <p>
+    `color-scheme="auto"` follows the user's color scheme preference and `color-scheme="dark"`
+    forces dark colors. Light colors are used by default
+  </p>
+
+  <div class="item-with-background">
+    <VueSkeletonContentLoader count="3" color-scheme="dark" />
+    <VueSkeletonContentLoader count="3" color-scheme="dark" animation="wave" />
+  </div>
+  <div class="item">
+    <VueSkeletonContentLoader count="3" color-scheme="auto" />
+  </div>
+
+  <h3>Skeleton themed via CSS custom properties from an ancestor element</h3>
+
+  <div
+    class="item"
+    style="
+      --vue-skeleton-content-loader-base-color: #c9e4ff;
+      --vue-skeleton-content-loader-animation-duration: 1s;
+    "
+  >
+    <VueSkeletonContentLoader count="3" />
+    <VueSkeletonContentLoader appearance="circle" count="5" animation="pulse" />
+  </div>
+
+  <h3>Skeleton using custom animation</h3>
+  <p>
+    `shine` animation is registered via TypeScript declaration merging (`demo/env.d.ts`) and its
+    styles are added in a global stylesheet (`demo/style.css`), targeting
+    `.skeleton-loader.animation-shine`
+  </p>
+
+  <div class="item">
+    <VueSkeletonContentLoader
+      count="5"
+      animation="shine"
+      style="--vue-skeleton-content-loader-animation-stagger: 0.15s"
+    />
+  </div>
+
   <br />
   <br />
   <h3>Skeleton switching values for `animation` and `count` &#64;Input</h3>

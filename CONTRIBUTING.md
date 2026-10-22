@@ -1,12 +1,12 @@
 # How to start
 
-**Note** requires node v20.x.x or higher and npm 10.x.x.
+**Note** requires Node.js v24.x.x (as described in `.nvmrc` file) and npm 11.x.x.
 
 ```bash
 git clone https://github.com/willmendesneto/vue-skeleton-content-loader.git
 cd vue-skeleton-content-loader
 npm install
-npm start
+npm run dev
 ```
 
 # Running test
@@ -19,7 +19,7 @@ npm test
 
 **Please follow these basic steps to simplify pull request reviews - if you don't you'll probably just be asked to anyway.**
 
-- Please rebase your branch against the current master
+- Please rebase your branch against the current `main` branch
 - Run `npm install` to make sure your development dependencies are up-to-date
 - Please ensure that the test suite passes **and** that code is lint free before submitting a PR by running:
 - `npm test`
