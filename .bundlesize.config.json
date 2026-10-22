@@ -7,6 +7,10 @@
     {
       "path": "dist/vue-skeleton-content-loader.umd.cjs",
       "maxSize": "966B"
+    },
+    {
+      "path": "dist/style.css",
+      "maxSize": "762B"
     }
   ]
 }

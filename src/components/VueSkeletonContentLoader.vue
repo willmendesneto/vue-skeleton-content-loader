@@ -103,64 +103,62 @@
     /**
       * `overflow` and `position` are required steps to make sure
       * the component respects the specified dimensions
-      * given via `theme` object @Input attribute
+      * given via `theme` prop
       */
     overflow: hidden;
     position: relative;
+    /**
+      * Isolates skeleton layout and paint from the rest of the page, so changes inside of it
+      * (e.g. animations or `custom-content`) don't trigger layout/paint work outside of it.
+      * More details in https://developer.mozilla.org/en-US/docs/Web/CSS/contain
+      */
+    contain: layout paint;
     background: var(--base-color) no-repeat;
     border-radius: 4px;
     width: 100%;
     height: 20px;
     display: inline-block;
     margin-bottom: 10px;
-    will-change: transform;
-  }
-  .skeleton-loader:after,
-  .skeleton-loader:before {
-    box-sizing: border-box;
   }
 
   /**
-    * Added only when `animation` attribute is `pulse`
-    * at component level. So that we can load the
-    * animations only if needed
+    * Added only when `appearance` prop is `circle` or `square`
     */
-  .skeleton-loader.circle {
-    width: 40px;
-    height: 40px;
-    margin: 5px;
-    border-radius: 50%;
-  }
+  .skeleton-loader.circle,
   .skeleton-loader.square {
     width: 40px;
     height: 40px;
     margin: 5px;
   }
+  .skeleton-loader.circle {
+    border-radius: 50%;
+  }
 
   /**
-    * Added only when `animation` attribute is `progress`
-    * at component level. So that we can load the
-    * animations only if needed
+    * Added only when `animation` prop is `progress` or `progress-dark`.
+    * The shimmer is a 200px gradient aligned to the right of a `:before` element which is
+    * 200px wider than the skeleton. Translating it from -100% to 0 makes the shimmer cross
+    * the whole skeleton - and only the skeleton - regardless of its width
     */
   .skeleton-loader.progress,
   .skeleton-loader.progress-dark {
-    transform: translate3d(0, 0, 0);
+    /**
+      * Creates a stacking context, so the animated `:before` is clipped by `border-radius`
+      * in every browser (e.g. Safari) without promoting the skeleton to its own GPU layer
+      */
+    isolation: isolate;
   }
-  .skeleton-loader.progress:after,
   .skeleton-loader.progress:before,
-  .skeleton-loader.progress-dark:after,
   .skeleton-loader.progress-dark:before {
     box-sizing: border-box;
-  }
-  .skeleton-loader.progress:before,
-  .skeleton-loader.progress-dark:before {
+    will-change: transform;
     animation: progress var(--animation-duration) ease-in-out infinite;
-    background-size: 200px 100%;
+    background: no-repeat right / 200px 100%;
     position: absolute;
     z-index: 1;
     top: 0;
     left: 0;
-    width: 200px;
+    width: calc(100% + 200px);
     height: 100%;
     content: '';
   }
@@ -172,60 +170,56 @@
   }
 
   /**
-    * Added only when `animation` attribute is `pulse`
-    * at component level. So that we can load the
-    * animations only if needed
+    * Added only when `animation` prop is `pulse` or `pulse-dark`
     */
-  .skeleton-loader.pulse {
-    animation: pulse var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    animation-delay: 0.5s;
+  .skeleton-loader.pulse,
+  .skeleton-loader.pulse-dark {
+    will-change: opacity;
+    animation: pulse var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1) 0.5s infinite;
   }
   .skeleton-loader.pulse-dark {
     background: var(--dark-mode-color);
-    animation: pulse var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    animation-delay: 0.5s;
   }
   .skeleton-loader.custom-content {
     height: 100%;
     background: none;
   }
 
-  /* Removing animations if Reduce motion is enabled via user's operating system */
+  /**
+    * Removing animations if user enabled the `Reduce Motion` option
+    * via operating system and/or browser
+    */
   @media (prefers-reduced-motion: reduce) {
     .skeleton-loader.pulse,
     .skeleton-loader.pulse-dark,
-    .skeleton-loader.progress-dark::before,
-    .skeleton-loader.custom-content,
-    .skeleton-loader.custom-content::before,
-    .skeleton-loader.custom-content::after,
-    .skeleton-loader.progress::before {
+    .skeleton-loader.progress:before,
+    .skeleton-loader.progress-dark:before {
       animation: none;
+      will-change: auto;
     }
-    .skeleton-loader.progress::before,
-    .skeleton-loader.custom-content::before,
-    .skeleton-loader.custom-content::after,
-    .skeleton-loader.progress-dark::before,
-    .skeleton-loader.pulse-dark,
-    .skeleton-loader.custom-content {
+    .skeleton-loader.progress:before,
+    .skeleton-loader.progress-dark:before {
       background-image: none;
     }
   }
 
-  /* Adding cursor styles ONLY for desktop users */
-  @media screen and (min-device-width: 1200px) {
+  /**
+    * Removing selection and adding `wait` cursor only on devices with mouse/trackpad
+    * (e.g. desktops and laptops), since the content is loading
+    */
+  @media (hover: hover) and (pointer: fine) {
     .skeleton-loader {
       user-select: none;
       cursor: wait;
     }
   }
 
-  /* Skeleton animations  */
   @keyframes progress {
     0% {
-      transform: translate3d(-200px, 0, 0);
+      transform: translate3d(-100%, 0, 0);
     }
     100% {
-      transform: translate3d(calc(200px + 100vw), 0, 0);
+      transform: translate3d(0, 0, 0);
     }
   }
   @keyframes pulse {

@@ -24,6 +24,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Checking the packed package with the minimum `vue` version from `peerDependencies` in CI (`npm run check:min-peer`)
 - Publishing only `dist`, `index.js` and `CHANGELOG.md` files (besides `README.md`, `LICENSE` and `package.json`) via `files` field, instead of `.npmignore`
 - Rendering skeletons via `v-for` over a number instead of creating an array
+- Improving rendering performance by scoping CSS `will-change` to the animated parts only: `transform` on the `progress`/`progress-dark` shimmer and `opacity` on `pulse`/`pulse-dark`. Skeletons without animation, or rendered with `prefers-reduced-motion: reduce`, are no longer promoted to their own GPU layer. In the demo page, composited layers dropped from 146 to 84 with animations
+- Replacing `transform: translate3d(0, 0, 0)` with `isolation: isolate` in `progress`/`progress-dark` skeletons, keeping the shimmer clipped by `border-radius` without an extra GPU layer
+- Adding CSS containment (`contain: layout paint`) to skeletons, isolating their layout and paint work from the rest of the page. There are no visual changes, since skeletons were already using `overflow: hidden` and `position: relative`
+- Improving `progress` and `progress-dark` animations by making the shimmer cross the skeleton based on its own width, instead of the viewport width (`100vw`). Previously, small skeletons (E.G: a `40px` circle) displayed the shimmer for only a fraction of the animation duration
+- Replacing deprecated `min-device-width` media query with `(hover: hover) and (pointer: fine)` to show the `wait` cursor and disable text selection only on devices with mouse/trackpad
+- Removing unused and duplicated CSS rules, decreasing CSS bundle size from 791B to 762B (gzip), and checking CSS bundle size via `npm run bundlesize`
 
 ### Added
 
