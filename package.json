@@ -3,9 +3,29 @@
   "description": "Make beautiful, animated loading skeletons that automatically adapt to your Vue apps",
   "version": "1.2.0",
   "license": "MIT",
-  "main": "./dist/index.js",
   "type": "module",
+  "main": "./index.js",
   "types": "./dist/index.d.ts",
+  "unpkg": "./dist/vue-skeleton-content-loader.umd.cjs",
+  "jsdelivr": "./dist/vue-skeleton-content-loader.umd.cjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "./index.js"
+  ],
+  "files": [
+    "CHANGELOG.md",
+    "dist",
+    "index.js"
+  ],
   "keywords": [
     "vue",
     "skeleton",
@@ -36,13 +56,6 @@
     "url": "https://github.com/willmendesneto/vue-skeleton-content-loader/issues"
   },
   "homepage": "https://github.com/willmendesneto/vue-skeleton-content-loader#readme",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./index.js",
-      "default": "./index.js"
-    }
-  },
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write src/ demo/ scripts/ '.github/**/*.yml' *.mts *.ts *.mjs",
@@ -59,7 +72,11 @@
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && npm run build && git add .",
     "bundlesize": "bundlesize --config .bundlesize.config.json",
     "lint:fix": "eslint . --fix",
-    "tdd": "vitest"
+    "tdd": "vitest",
+    "check:min-peer": "./scripts/check-min-peer-dependency.sh"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

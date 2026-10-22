@@ -1,6 +1,16 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, warn } from 'vue';
   import { VueSkeletonContentLoaderConfig } from '@/components/VueSkeletonContentLoader.types';
+
+  // Converts a size (e.g. `10`, `'1.5'`, `'10rem'`) into a CSS value, using `unit` if it has none
+  const toCSSSize = (
+    size: VueSkeletonContentLoaderConfig['size'],
+    unit: VueSkeletonContentLoaderConfig['measureUnit'],
+  ) => {
+    const [, value, sizeUnit] = `${size}`.match(/^\s*(\d*\.?\d+)(px|em|rem|%|vh|vw)?\s*$/) || [];
+
+    return value ? value + (sizeUnit || unit) : null;
+  };
 
   const props = withDefaults(defineProps<Partial<VueSkeletonContentLoaderConfig>>(), {
     loadingText: 'Loading...',
@@ -13,22 +23,22 @@
     measureUnit: 'px',
   });
 
-  const items = computed(() => Array.from({ length: Number(props.count) }, (_, i) => i + 1));
+  // Number of skeletons. `v-for` over a number renders items from 1 to `count`
+  const count = computed(() => {
+    const total = Math.trunc(+props.count) || 1;
 
-  const size = computed<`${number}${VueSkeletonContentLoaderConfig['measureUnit']}` | null>(() => {
-    if (
-      props.appearance !== 'square' ||
-      (typeof props.size !== 'number' && typeof props.size !== 'string')
-    ) {
-      return null;
+    // `custom-content` renders the slot content, so it should be a single DOM node
+    if (props.appearance === 'custom-content' && total !== 1) {
+      // `warn` is a no-op in production builds of Vue
+      warn('"custom-content" appearance renders a single skeleton');
+      return 1;
     }
-
-    const sizeValueInNumbersOnly = Number(props.size.toString().trim().replace(/\D/g, ''));
-    if (!Number.isInteger(sizeValueInNumbersOnly)) {
-      return null;
-    }
-    return `${sizeValueInNumbersOnly}${props.measureUnit}`;
+    return total;
   });
+
+  const size = computed(() =>
+    props.appearance === 'square' ? toCSSSize(props.size, props.measureUnit) : null,
+  );
 
   // Styles can be passed as a prop to customize the skeleton loader
   const styles = computed<VueSkeletonContentLoaderConfig['theme']>(() => ({
@@ -39,7 +49,7 @@
 
 <template>
   <div
-    v-for="item in items"
+    v-for="item in count"
     :key="item"
     :aria-label="props.ariaLabel"
     aria-busy="true"
@@ -184,7 +194,7 @@
   @media (prefers-reduced-motion: reduce) {
     .skeleton-loader.pulse,
     .skeleton-loader.pulse-dark,
-    .skeleton-loader.progress-dark,
+    .skeleton-loader.progress-dark::before,
     .skeleton-loader.custom-content,
     .skeleton-loader.custom-content::before,
     .skeleton-loader.custom-content::after,
@@ -194,7 +204,7 @@
     .skeleton-loader.progress::before,
     .skeleton-loader.custom-content::before,
     .skeleton-loader.custom-content::after,
-    .skeleton-loader.progress-dark,
+    .skeleton-loader.progress-dark::before,
     .skeleton-loader.pulse-dark,
     .skeleton-loader.custom-content {
       background-image: none;

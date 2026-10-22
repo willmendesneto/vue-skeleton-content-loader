@@ -8,7 +8,6 @@
 [![NPM](https://nodei.co/npm-dl/vue-skeleton-content-loader.png?height=3&months=3)](https://npmjs.org/vue-skeleton-content-loader)
 
 [![CI](https://github.com/willmendesneto/vue-skeleton-content-loader/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/willmendesneto/vue-skeleton-content-loader/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/willmendesneto/vue-skeleton-content-loader/badge.svg?branch=main)](https://coveralls.io/r/willmendesneto/vue-skeleton-content-loader?branch=main)
 [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/vue-skeleton-content-loader.svg)](https://bundlephobia.com/result?p=vue-skeleton-content-loader)
 [![npm](https://img.shields.io/npm/l/express.svg?maxAge=2592000)](/LICENSE)
 
@@ -43,6 +42,23 @@ You can get it on NPM by installing the `vue-skeleton-content-loader` module as 
 
 ```shell
 npm install vue-skeleton-content-loader --save
+```
+
+> Requires Vue v3.5 or higher.
+
+### Using via CDN
+
+The package also provides an UMD build, exposing the component via `VueSkeletonContentLoader` global variable. It requires Vue's global build and the package styles to be loaded in the page.
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/vue-skeleton-content-loader/dist/style.css" />
+<script src="https://unpkg.com/vue/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue-skeleton-content-loader"></script>
+<script>
+  const app = Vue.createApp({});
+  app.component('VueSkeletonContentLoader', VueSkeletonContentLoader.VueSkeletonContentLoader);
+  app.mount('#app');
+</script>
 ```
 
 ## Usage
@@ -82,8 +98,7 @@ For global availability across your application, you can register `VueSkeletonCo
 // main.ts or main.js
 import { createApp } from 'vue';
 import App from './App.vue';
-// Note: import default export for global registration
-import VueSkeletonContentLoader from 'vue-skeleton-content-loader';
+import { VueSkeletonContentLoader } from 'vue-skeleton-content-loader';
 
 const app = createApp(App);
 // Register globally
@@ -97,11 +112,11 @@ After global registration, you can use `<VueSkeletonContentLoader>` directly in 
 
 `VueSkeletonContentLoader` accepts several props to customize its behavior and appearance:
 
-- `count` - _default_ `1`: Number of skeleton lines/shapes to render.
+- `count` - _default_ `1`: Number of skeleton lines/shapes to render. Invalid values (E.G: `0` or `"abc"`) render a single skeleton. It's always `1` when `appearance` is `custom-content`.
 - `animation` - _default_ `progress`: Defines the CSS animation. See [Animations](#animations) for options.
 - `appearance` - _default_ `line`: Defines the shape of the skeleton. See [Appearance](#appearance) for options.
 - `theme` - _default_ `null`: An object containing CSS styles to apply to the skeleton. See [Theming](#theming) for details.
-- `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number or number as string (E.G: `"40"` or `40`). It also supports `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
+- `size` - _default_ `null`: A number to be passed for the component if `appearance` is `square`. Uses `pixel` as default unit and accepts as number, number as string or number with CSS unit (E.G: `40`, `"1.5"` or `"10rem"`). A CSS unit passed in `size` takes precedence over `measure-unit`. Invalid values don't add `width`/`height` styles. It also supports `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
 - `loadingText` - _default_ `Loading...`: attribute that defines the text value for `aria-valuetext` attribute. Defaults to "Loading..."
 - `aria-label` - _default_ `loading`: you can add `ariaLabel` as input of the component to set a different value.
 
@@ -115,7 +130,7 @@ You can also define which appearance you want to use in your skeleton loader by 
 - `line`: it will render like a line. This is the same behavior as passing an empty string;
 - `circle`: it will use `circle` as appearance. Great for avatar skeletons, for example :);
 - `square`: it will use `square` as appearance and render it appropriately. Great for cards and images, for example; It also requires `size` to be passed through the component - `size` has default size of `40px` and it has `measure-unit` as optional way to change default CSS measure unit from `px` to one of the valid options: `px`, `em`, `rem`, `%`, `vh`, `vw`
-- `custom-content`: it will NOT add any appearance. Great for custom content, such as SVG, internal components and such. Although not rendering appearance, animation will be added unless component has `animation="false"` prop;
+- `custom-content`: it will NOT add any appearance. Great for custom content, such as SVG, internal components and such. Although not rendering appearance, animation will be added unless component has `animation="false"` prop. It renders a single skeleton, even if `count` is bigger than `1`;
 
 ### Appearance props (specific for `square`)
 

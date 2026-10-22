@@ -1,6 +1,6 @@
-# Publishing a Hotfix for NGX Skeleton Loader
+# Publishing a Hotfix for Vue Skeleton Content Loader
 
-> This guide outlines the steps to publish a hotfix for the NGX Skeleton Loader package for older versions - if necessary.
+> This guide outlines the steps to publish a hotfix for the Vue Skeleton Content Loader package for older versions - if necessary.
 
 A hotfix addresses critical issues that need immediate attention without waiting for the next scheduled release cycle.
 
@@ -8,7 +8,7 @@ A hotfix addresses critical issues that need immediate attention without waiting
 
 Please make sure you're using the correct NodeJS and NPM versions, as described below - and also in `.nvmrc` file.
 
-> **Note** requires node v20.x.x or higher and npm 10.x.x.
+> **Note** requires Node.js v24.x.x (as described in `.nvmrc` file) and npm 11.x.x.
 
 ## Hotfix Process
 
@@ -90,7 +90,7 @@ Include a link to the issue being resolved and the changelog entry.
 
 ### 8. Merge and Publish the Package Fix
 
-Once the PR is reviewed and merged, the updated package will be published to npm by following the [Publish steps as described on `README.md` file.](https://github.com/willmendesneto/vue-skeleton-content-loader?tab=readme-ov-file#publish)
+Once the PR is reviewed and merged, the updated package will be published to npm by running `npm publish` from the tagged commit. The package is built automatically before publishing, via `prepublishOnly` npm script.
 
 
 ## Notes
@@ -99,4 +99,4 @@ Testing: Always run the full test suite before merging and publishing a hotfix.
 
 Documentation: Maintain up-to-date documentation for future contributors.
 
-By following these steps, you ensure a smooth and reliable hotfix process for the NGX Skeleton Loader package.
+By following these steps, you ensure a smooth and reliable hotfix process for the Vue Skeleton Content Loader package.

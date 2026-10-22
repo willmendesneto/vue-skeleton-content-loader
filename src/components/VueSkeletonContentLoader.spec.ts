@@ -63,6 +63,21 @@ describe('VueSkeletonContentLoader', () => {
       });
       expect(wrapper.findAll('.skeleton-loader').length).toBe(count);
     });
+
+    it('should ignore decimal values in `count`', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { count: '2.5' },
+      });
+      expect(wrapper.findAll('.skeleton-loader').length).toBe(2);
+    });
+
+    it.each([0, 'abc'])('should render a single skeleton if `count` is %j', (count) => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        // @ts-expect-error testing invalid values
+        props: { count },
+      });
+      expect(wrapper.findAll('.skeleton-loader').length).toBe(1);
+    });
   });
 
   describe('When skeleton is created with circle appearance', () => {
@@ -97,10 +112,24 @@ describe('VueSkeletonContentLoader', () => {
       expect(wrapper.find('.skeleton-loader.custom-content').exists()).toBe(true);
       expect(wrapper.find('.skeleton-loader.custom-content #svg-content').exists()).toBe(true);
     });
+
+    it('should render a single skeleton even if `count` is bigger than 1', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => null);
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { appearance: 'custom-content', count: 3 },
+        slots: { default: '<p class="slot-content">content</p>' },
+      });
+      expect(wrapper.findAll('.skeleton-loader').length).toBe(1);
+      expect(wrapper.findAll('.slot-content').length).toBe(1);
+      expect(warn).toHaveBeenCalledOnce();
+      expect(warn.mock.calls[0][0]).toContain(
+        '"custom-content" appearance renders a single skeleton',
+      );
+    });
   });
 
   describe('When skeleton is created without animation', () => {
-    it('should NOT render any skeleton loaders if animation is set to "false"', () => {
+    it('should NOT add any animation class if animation is set to "false"', () => {
       const wrapper = mount(VueSkeletonContentLoader, {
         props: { animation: 'false' },
       });
@@ -149,11 +178,42 @@ describe('VueSkeletonContentLoader', () => {
     });
     it('should render skeleton with width and height based on `size` using `measureUnit` attribute if available', () => {
       const wrapper = mount(VueSkeletonContentLoader, {
-        props: { appearance: 'square', size: `80em`, measureUnit: 'rem' },
+        props: { appearance: 'square', size: '80', measureUnit: 'rem' },
       });
       const skeleton = wrapper.find('.skeleton-loader');
       expect(skeleton.attributes('style')).toContain('width: 80rem;');
       expect(skeleton.attributes('style')).toContain('height: 80rem;');
+    });
+
+    it('should use the CSS unit passed in `size` over `measureUnit` attribute', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { appearance: 'square', size: '10em', measureUnit: 'rem' },
+      });
+      const skeleton = wrapper.find('.skeleton-loader');
+      expect(skeleton.attributes('style')).toContain('width: 10em;');
+      expect(skeleton.attributes('style')).toContain('height: 10em;');
+    });
+
+    it('should keep decimal values passed in `size`', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { appearance: 'square', size: '1.5', measureUnit: 'rem' },
+      });
+      expect(wrapper.find('.skeleton-loader').attributes('style')).toContain('width: 1.5rem;');
+    });
+
+    it('should NOT add width and height styles if `size` is invalid', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        // @ts-expect-error testing invalid values
+        props: { appearance: 'square', size: 'abc' },
+      });
+      expect(wrapper.find('.skeleton-loader').attributes('style')).toBeFalsy();
+    });
+
+    it('should NOT add width and height styles if appearance is not `square`', () => {
+      const wrapper = mount(VueSkeletonContentLoader, {
+        props: { appearance: 'circle', size: 50 },
+      });
+      expect(wrapper.find('.skeleton-loader').attributes('style')).toBeFalsy();
     });
   });
 

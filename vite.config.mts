@@ -16,7 +16,8 @@ export default defineConfig({
         'vue-skeleton-content-loader': resolve(import.meta.dirname, 'src/index.ts'),
       },
       name: 'VueSkeletonContentLoader',
-      fileName: (format, entryName) => `${entryName}.${format}.js`,
+      // UMD output uses `.cjs` extension, since the package is `"type": "module"`
+      fileName: (format, entryName) => `${entryName}.${format}.${format === 'umd' ? 'cjs' : 'js'}`,
       // Keeps `dist/style.css` name, imported by `index.js`
       cssFileName: 'style',
     },

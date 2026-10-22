@@ -8,11 +8,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+#### Breaking Change
+
+- Declaring `vue` (`^3.5.0`) as `peerDependencies`. Previously, the package didn't declare its Vue dependency
+- Renaming UMD output from `dist/vue-skeleton-content-loader.umd.js` to `dist/vue-skeleton-content-loader.umd.cjs`, since the package is `"type": "module"` and `.js` files are loaded as ES modules. It's now exposed via `unpkg`/`jsdelivr` fields and can be loaded via `require()`
+- A CSS unit passed in `size` (E.G: `size="10em"`) now takes precedence over `measure-unit`, instead of being ignored
+
+#### Other Changes
+
 - Upgrading project to Node.js v24, Vite v8, Vitest v5, ESLint v10 (flat config), TypeScript v6 and latest versions of other dev dependencies
 - Decreasing bundle size from 998B to 874B (ES) and from 966B to 938B (UMD) - gzip - by minifying the ES output and removing `Symbol.toStringTag` from the generated code
 - Replacing `bundlesize` with `bundlesize2`, since `bundlesize` native dependencies don't work in Node.js v24
 - Removing unused dev dependencies and configurations
 - Adding CI via GitHub Actions: lint (including formatting), type check, unit tests, build, bundle size, SSR rendering of the built package (`npm run test:ssr`) and demo build, plus Dependabot updates for GitHub Actions
+- Checking the packed package with the minimum `vue` version from `peerDependencies` in CI (`npm run check:min-peer`)
+- Publishing only `dist`, `index.js` and `CHANGELOG.md` files (besides `README.md`, `LICENSE` and `package.json`) via `files` field, instead of `.npmignore`
+- Rendering skeletons via `v-for` over a number instead of creating an array
+
+### Added
+
+- Adding `./style.css` and `./package.json` to package `exports`, and `sideEffects` field, so bundlers can tree-shake the package safely
+- Adding docs about CDN usage (UMD build) and minimum Vue version on `README.md` file
+
+### Fixed
+
+- Fixing `main` field in `package.json`, pointing to a file that doesn't exist (`./dist/index.js`)
+- Fixing `size` for `square` appearance ignoring decimal values (E.G: `1.5` became `15`) and CSS units passed in `size` (E.G: `10rem` became `10px`). Invalid values (E.G: `abc`) don't add `width`/`height` styles anymore, instead of adding `0px`
+- Fixing `custom-content` appearance rendering the slot content multiple times when `count` is bigger than `1`. `count` is now forced to `1`, with a warning in development mode
+- Fixing invalid `count` values (E.G: `0` or `"abc"`) rendering no skeletons. They render a single skeleton now, and decimal values are truncated
+- Fixing `progress-dark` animation still running when user prefers reduced motion
+- Fixing global registration example in `README.md` file, which used a default export that doesn't exist
+- Fixing outdated info and commands on `CONTRIBUTING.md` and `PUBLISHING_HOTFIX.md` files
 
 ## [1.2.0][] - 2025-08-27
 
